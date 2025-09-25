@@ -1,3 +1,6 @@
+/* Import custom sidebar styles first */
+@import './styles/sidebar.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
