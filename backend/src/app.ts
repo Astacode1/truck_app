@@ -16,6 +16,7 @@ import ocrRouter from './routes/ocrRoutes';
 import receiptsRouter from './routes/receipts';
 import receiptVerificationRouter from './routes/receiptVerificationRoutes';
 import reportsRouter from './routes/reportsRoutes';
+import iftaRouter from './routes/iftaRoutes';
 
 const app = express();
 
@@ -57,6 +58,7 @@ app.use('/api/ocr', ocrRouter);
 app.use('/api/receipts', receiptsRouter);
 app.use('/api/receipts/verification', receiptVerificationRouter);
 app.use('/api/reports', reportsRouter);
+app.use('/api/ifta', iftaRouter);
 
 // 404 handler
 app.use('*', (req, res) => {

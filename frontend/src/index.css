@@ -11,20 +11,119 @@
   }
   
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-neutral-50 text-neutral-900;
   }
 }
 
 @layer components {
+  /* Primary Button - Professional Blue */
   .btn-primary {
-    @apply bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors;
+    @apply bg-primary-800 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md;
   }
   
+  /* Secondary Button - Truck Orange */
   .btn-secondary {
-    @apply bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors;
+    @apply bg-secondary-600 hover:bg-secondary-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md;
   }
   
-  .card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+  /* Success Button - Emerald Green */
+  .btn-success {
+    @apply bg-success-600 hover:bg-success-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md;
   }
+  
+  /* Warning Button - Amber */
+  .btn-warning {
+    @apply bg-warning-500 hover:bg-warning-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md;
+  }
+  
+  /* Error Button - Red */
+  .btn-error {
+    @apply bg-error-500 hover:bg-error-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md;
+  }
+  
+  /* Neutral Button - Gray */
+  .btn-neutral {
+    @apply bg-neutral-100 hover:bg-neutral-200 text-neutral-700 px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md;
+  }
+  
+  /* Card Components */
+  .card {
+    @apply bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-700 p-6 hover:shadow-md dark:hover:shadow-xl transition-all duration-200;
+  }
+  
+  .card-header {
+    @apply border-b border-neutral-200 dark:border-neutral-700 pb-4 mb-4;
+  }
+  
+  /* Status Indicators */
+  .status-success {
+    @apply bg-success-100 dark:bg-success-900 text-success-800 dark:text-success-200 px-2 py-1 rounded-full text-sm font-medium;
+  }
+  
+  .status-warning {
+    @apply bg-warning-100 dark:bg-warning-900 text-warning-800 dark:text-warning-200 px-2 py-1 rounded-full text-sm font-medium;
+  }
+  
+  .status-error {
+    @apply bg-error-100 dark:bg-error-900 text-error-800 dark:text-error-200 px-2 py-1 rounded-full text-sm font-medium;
+  }
+  
+  .status-neutral {
+    @apply bg-neutral-100 text-neutral-800 px-2 py-1 rounded-full text-sm font-medium;
+  }
+  
+  /* Input Fields */
+  .input-field {
+    @apply border border-neutral-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors;
+  }
+  
+  /* Navigation and Headers */
+  .nav-primary {
+    @apply bg-primary-800 text-white;
+  }
+  
+  .nav-secondary {
+    @apply bg-secondary-600 text-white;
+  }
+}
+
+/* Custom Color Palette Animations */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes color-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+.animate-gradient-shift {
+  background-size: 400% 400%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+.animate-color-pulse {
+  animation: color-pulse 2s ease-in-out infinite;
 }

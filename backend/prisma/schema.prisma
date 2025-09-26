@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -122,6 +122,9 @@ model Truck {
   maintenanceRecords MaintenanceRecord[]
   receipts           Receipt[]
   expenses           Expense[]
+  
+  // IFTA Relations
+  iftaFuelPurchases  IFTAFuelPurchase[]
 
   @@map("trucks")
 }
@@ -167,6 +170,10 @@ model Trip {
   driverProfile DriverProfile @relation(fields: [driverProfileId], references: [id])
   receipts      Receipt[]
   expenses      Expense[]
+  
+  // IFTA Relations
+  iftaSegments  IFTATripSegment[]
+  iftaFuelPurchases IFTAFuelPurchase[]
 
   @@map("trips")
 }
@@ -209,6 +216,9 @@ model Receipt {
   truckId    String?
   truck      Truck? @relation(fields: [truckId], references: [id])
   anomalies  AnomalyRecord[]
+  
+  // IFTA Relations
+  iftaFuelPurchase IFTAFuelPurchase?
 
   @@map("receipts")
 }
@@ -484,4 +494,145 @@ model AnomalyRecord {
   @@index([status])
   @@index([createdAt])
   @@map("anomaly_records")
+}
+
+// IFTA (International Fuel Tax Agreement) Models
+
+// IFTA Trip Segments - tracks miles driven in each state
+model IFTATripSegment {
+  id           String   @id @default(cuid())
+  tripId       String
+  state        String   // 2-letter state code
+  miles        Float    // miles driven in this state
+  startMileage Float    // odometer reading at state entry
+  endMileage   Float    // odometer reading at state exit
+  entryPoint   String?  // entry location/city
+  exitPoint    String?  // exit location/city
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  trip         Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  @@index([tripId])
+  @@index([state])
+  @@index([createdAt])
+  @@map("ifta_trip_segments")
+}
+
+// IFTA Fuel Purchases - enhanced fuel expense tracking
+model IFTAFuelPurchase {
+  id             String   @id @default(cuid())
+  receiptId      String   @unique
+  tripId         String?
+  truckId        String
+  state          String   // 2-letter state code where fuel was purchased
+  gallons        Float    // gallons purchased
+  pricePerGallon Float    // price per gallon
+  totalAmount    Float    // total purchase amount
+  taxPaid        Float    // fuel tax paid at purchase
+  purchaseDate   DateTime // date of fuel purchase
+  location       String   // purchase location
+  vendor         String?  // fuel vendor/station
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  receipt        Receipt  @relation(fields: [receiptId], references: [id], onDelete: Cascade)
+  trip           Trip?    @relation(fields: [tripId], references: [id], onDelete: SetNull)
+  truck          Truck    @relation(fields: [truckId], references: [id])
+
+  @@index([receiptId])
+  @@index([tripId])
+  @@index([truckId])
+  @@index([state])
+  @@index([purchaseDate])
+  @@map("ifta_fuel_purchases")
+}
+
+// IFTA Quarterly Reports
+model IFTAQuarterlyReport {
+  id             String             @id @default(cuid())
+  companyId      String?            // company/fleet identifier
+  year           Int
+  quarter        IFTAQuarter
+  totalMiles     Float              @default(0)
+  totalGallons   Float              @default(0)
+  netTaxDue      Float              @default(0)
+  netRefundDue   Float              @default(0)
+  filingStatus   IFTAFilingStatus   @default(DRAFT)
+  submittedDate  DateTime?
+  dueDate        DateTime
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  // Relations
+  jurisdictions  IFTAJurisdictionData[]
+
+  @@unique([companyId, year, quarter])
+  @@index([year, quarter])
+  @@index([filingStatus])
+  @@index([dueDate])
+  @@map("ifta_quarterly_reports")
+}
+
+// IFTA Jurisdiction Data - detailed breakdown by state
+model IFTAJurisdictionData {
+  id               String              @id @default(cuid())
+  reportId         String
+  state            String              // 2-letter state code
+  totalMiles       Float               @default(0)
+  taxPaidGallons   Float               @default(0)
+  taxFreeGallons   Float               @default(0)
+  computedGallons  Float               @default(0)
+  averageMPG       Float               @default(6.5)
+  taxRate          Float               // tax rate per gallon
+  grossTax         Float               @default(0)
+  netTax           Float               @default(0)
+  fuelTaxPaid      Float               @default(0)
+  taxDue           Float               @default(0)
+  refundDue        Float               @default(0)
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  // Relations
+  report           IFTAQuarterlyReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@unique([reportId, state])
+  @@index([reportId])
+  @@index([state])
+  @@map("ifta_jurisdiction_data")
+}
+
+// IFTA State Tax Rates - historical tracking of tax rates
+model IFTAStateTaxRate {
+  id             String   @id @default(cuid())
+  state          String   // 2-letter state code
+  rate           Float    // tax rate per gallon
+  effectiveDate  DateTime // when this rate became effective
+  endDate        DateTime? // when this rate expired (null if current)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([state, effectiveDate])
+  @@index([state, isActive])
+  @@index([effectiveDate])
+  @@map("ifta_state_tax_rates")
+}
+
+// IFTA Enums
+enum IFTAQuarter {
+  Q1
+  Q2
+  Q3
+  Q4
+}
+
+enum IFTAFilingStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  AMENDED
 }

@@ -1,13 +1,12 @@
 import { app } from './app';
-import { PrismaClient } from '@prisma/client';
+import { initializeDatabase } from './config/sqlite';
 
-const PORT = process.env.PORT || 5000;
-const prisma = new PrismaClient();
+const PORT = process.env.PORT || 3001;
 
 async function startServer() {
   try {
-    // Test database connection
-    await prisma.$connect();
+    // Initialize SQLite database
+    initializeDatabase();
     console.log('✅ Database connected successfully');
 
     // Start the server
@@ -23,15 +22,8 @@ async function startServer() {
       
       server.close(async () => {
         console.log('✅ HTTP server closed');
-        
-        try {
-          await prisma.$disconnect();
-          console.log('✅ Database connection closed');
-          process.exit(0);
-        } catch (error) {
-          console.error('❌ Error during database disconnect:', error);
-          process.exit(1);
-        }
+        console.log('✅ Database connection closed');
+        process.exit(0);
       });
 
       // Force close after 10 seconds

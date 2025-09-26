@@ -59,14 +59,14 @@ export default function Layout({ children }: LayoutProps) {
     navigation.filter(item => item.section === sectionKey)
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Enhanced Sidebar with Material Design */}
+    <div className="min-h-screen bg-neutral-50">
+      {/* Professional Sidebar with Primary Blue Theme */}
       <div className="sidebar elevation-2">
-        {/* Header with gradient background and enhanced effects */}
+        {/* Header with professional truck branding */}
         <div className="sidebar-header">
           <div className="flex items-center">
-            <Truck className="w-6 h-6 mr-3" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
-            <h1>TruckFlow</h1>
+            <Truck className="w-6 h-6 mr-3 text-secondary-400" style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }} />
+            <h1 className="text-white">TruckFlow</h1>
           </div>
         </div>
 
@@ -103,8 +103,8 @@ export default function Layout({ children }: LayoutProps) {
             </div>
           ))}
 
-          {/* Settings section at the bottom */}
-          <div className="nav-section mt-8 pt-4 border-t border-gray-200">
+          {/* Settings section at the bottom with professional styling */}
+          <div className="nav-section mt-8 pt-4 border-t border-white border-opacity-20">
             <ul className="space-y-1">
               <li>
                 <Link

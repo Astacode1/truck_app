@@ -8,6 +8,7 @@ import Invoices from './pages/Invoices'
 import IFTACalculator from './pages/IFTACalculator'
 import IFTAFormGenerator from './pages/IFTAFormGenerator'
 import Maintenance from './pages/Maintenance'
+import ColorPalette from './components/ColorPalette'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/ifta" element={<IFTACalculator />} />
           <Route path="/ifta-form" element={<IFTAFormGenerator />} />
           <Route path="/maintenance" element={<Maintenance />} />
+          <Route path="/colors" element={<ColorPalette />} />
         </Routes>
       </Layout>
     </Router>
