@@ -5,26 +5,1104 @@
 @tailwind components;
 @tailwind utilities;
 
+/* CSS Custom Properties for Theme System */
+:root {
+  /* Light theme variables (default) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --sidebar-bg: rgba(248, 250, 252, 0.95);
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  --accent-blue: #3b82f6;
+  --accent-blue-hover: #2563eb;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+}
+
+/* Dark theme variables */
+[data-theme="dark"] {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text-primary: #f8fafc;
+  --text-secondary: #e2e8f0;
+  --text-muted: #94a3b8;
+  --border-color: #475569;
+  --sidebar-bg: rgba(30, 41, 59, 0.95);
+  --card-bg: rgba(51, 65, 85, 0.8);
+  --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  --accent-blue: #3b82f6;
+  --accent-blue-hover: #2563eb;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+}
+
 @layer base {
   html {
     font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
   
   body {
-    @apply bg-gray-50 text-gray-900;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors;
+    background-color: var(--accent-blue);
+    color: white;
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-300;
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--accent-blue-hover);
   }
   
   .btn-secondary {
-    @apply bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors;
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-300;
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--border-color);
   }
   
   .card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    box-shadow: var(--shadow);
+    @apply rounded-lg border p-6 transition-all duration-300;
+    backdrop-filter: blur(10px);
   }
+
+  /* Theme Toggle Button Styles */
+  .theme-toggle-btn {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow);
+  }
+
+  .theme-toggle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    border-color: var(--accent-blue);
+    background: var(--bg-tertiary);
+  }
+
+  .theme-toggle-btn:active {
+    transform: translateY(0);
+  }
+
+  .theme-toggle-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .theme-icon {
+    color: var(--text-primary);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sun-icon {
+    animation: sunRotate 20s linear infinite;
+  }
+
+  .moon-icon {
+    animation: moonGlow 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes sunRotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes moonGlow {
+    0% {
+      filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.5));
+    }
+    100% {
+      filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.8));
+    }
+  }
+
+  /* Top bar styling */
+  .top-bar {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Notification bar styling */
+  .notification-bar {
+    position: sticky;
+    top: 80px;
+    z-index: 30;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .notification-bar:hover {
+    transform: translateY(-1px);
+  }
+
+  /* Notification animations */
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .notification-item {
+    animation: slideDown 0.3s ease-out;
+  }
+
+  /* Pulse animation for urgent notifications */
+  .urgent-pulse {
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  /* Update existing elements to use theme variables */
+  .glassmorphism {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+  }
+}
+
+/* Smooth transitions for theme switching */
+* {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: 0.3s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Global theme-aware styles */
+.min-h-screen {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* Override Tailwind gray backgrounds */
+.bg-gray-50 {
+  background-color: var(--bg-secondary) !important;
+}
+
+.bg-gray-100 {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.bg-white {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Override Tailwind text colors */
+.text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+.text-gray-800 {
+  color: var(--text-primary) !important;
+}
+
+.text-gray-700 {
+  color: var(--text-secondary) !important;
+}
+
+.text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+.text-gray-500 {
+  color: var(--text-muted) !important;
+}
+
+.text-gray-400 {
+  color: var(--text-muted) !important;
+}
+
+/* Table theme support */
+.divide-gray-200 > * + * {
+  border-color: var(--border-color) !important;
+}
+
+.border-gray-200 {
+  border-color: var(--border-color) !important;
+}
+
+.border-gray-300 {
+  border-color: var(--border-color) !important;
+}
+
+/* Button theme overrides */
+.hover\:bg-gray-200:hover {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.hover\:bg-gray-50:hover {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.hover\:bg-gray-100:hover {
+  background-color: var(--border-color) !important;
+}
+
+/* Form elements */
+.border-gray-300 {
+  border-color: var(--border-color) !important;
+}
+
+.focus\:border-blue-500:focus {
+  border-color: var(--accent-blue) !important;
+}
+
+.focus\:ring-blue-500:focus {
+  --tw-ring-color: var(--accent-blue) !important;
+}
+
+/* Placeholder text */
+.placeholder-gray-400::placeholder {
+  color: var(--text-muted) !important;
+}
+
+.placeholder-gray-500::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Shadow overrides */
+.shadow {
+  box-shadow: var(--shadow) !important;
+}
+
+.shadow-sm {
+  box-shadow: var(--shadow) !important;
+}
+
+.shadow-lg {
+  box-shadow: var(--shadow) !important;
+}
+
+/* Badge and alert backgrounds */
+.bg-blue-50 {
+  background-color: rgba(59, 130, 246, 0.1) !important;
+}
+
+.bg-green-50 {
+  background-color: rgba(16, 185, 129, 0.1) !important;
+}
+
+.bg-yellow-50 {
+  background-color: rgba(245, 158, 11, 0.1) !important;
+}
+
+.bg-red-50 {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+}
+
+/* Additional notification styling */
+.border-red-200 {
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.border-yellow-200 {
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+.border-blue-200 {
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+.border-orange-200 {
+  border-color: rgba(249, 115, 22, 0.3) !important;
+}
+
+/* Additional comprehensive Tailwind overrides for dark mode */
+.bg-white { 
+  background: var(--bg-primary) !important; 
+}
+
+.text-gray-900 { 
+  color: var(--text-primary) !important; 
+}
+
+.text-gray-800 { 
+  color: var(--text-primary) !important; 
+}
+
+.text-gray-700 { 
+  color: var(--text-secondary) !important; 
+}
+
+.text-gray-600 { 
+  color: var(--text-secondary) !important; 
+}
+
+.text-gray-500 { 
+  color: var(--text-tertiary) !important; 
+}
+
+.text-gray-400 { 
+  color: var(--text-tertiary) !important; 
+}
+
+.bg-gray-50 { 
+  background: var(--bg-secondary) !important; 
+}
+
+.bg-gray-100 { 
+  background: var(--bg-secondary) !important; 
+}
+
+.border-gray-200 { 
+  border-color: var(--border-color) !important; 
+}
+
+.border-gray-300 { 
+  border-color: var(--border-color) !important; 
+}
+
+/* Table specific overrides */
+thead { 
+  background: var(--bg-secondary) !important; 
+}
+
+th { 
+  color: var(--text-secondary) !important; 
+}
+
+/* Tab overrides */
+.border-transparent { 
+  border-color: transparent !important; 
+}
+
+.border-blue-500 { 
+  border-color: var(--accent-blue) !important; 
+}
+
+.text-blue-600 { 
+  color: var(--accent-blue) !important; 
+}
+
+/* Button and hover states */
+.hover\:bg-gray-50:hover { 
+  background-color: var(--bg-tertiary) !important; 
+}
+
+.hover\:bg-gray-100:hover { 
+  background-color: var(--bg-tertiary) !important; 
+}
+
+.hover\:text-gray-700:hover { 
+  color: var(--text-primary) !important; 
+}
+
+.hover\:text-gray-800:hover { 
+  color: var(--text-primary) !important; 
+}
+
+.hover\:border-gray-300:hover { 
+  border-color: var(--border-color) !important; 
+}
+
+/* Form elements */
+input, select, textarea {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent-blue) !important;
+  box-shadow: 0 0 0 1px var(--accent-blue) !important;
+}
+
+/* Option elements in selects */
+option { 
+  background: var(--bg-primary) !important; 
+  color: var(--text-primary) !important; 
+}
+
+/* Additional badge colors */
+.bg-green-100 { 
+  background-color: rgba(34, 197, 94, 0.1) !important; 
+}
+
+.bg-yellow-100 { 
+  background-color: rgba(234, 179, 8, 0.1) !important; 
+}
+
+.bg-red-100 { 
+  background-color: rgba(239, 68, 68, 0.1) !important; 
+}
+
+.bg-blue-100 { 
+  background-color: rgba(59, 130, 246, 0.1) !important; 
+}
+
+.text-green-800 { 
+  color: rgb(34, 197, 94) !important; 
+}
+
+.text-yellow-800 { 
+  color: rgb(234, 179, 8) !important; 
+}
+
+.text-red-800 { 
+  color: rgb(239, 68, 68) !important; 
+}
+
+.text-blue-800 { 
+  color: rgb(59, 130, 246) !important; 
+}
+
+/* Additional notification specific overrides */
+.bg-amber-50 { 
+  background-color: rgba(245, 158, 11, 0.1) !important; 
+}
+
+.border-amber-200 { 
+  border-color: rgba(245, 158, 11, 0.3) !important; 
+}
+
+.text-amber-700 { 
+  color: rgb(245, 158, 11) !important; 
+}
+
+/* Placeholder text for all variants */
+.placeholder-blue-100::placeholder { 
+  color: rgba(59, 130, 246, 0.7) !important; 
+}
+
+/* Ensure proper text color inheritance */
+* {
+  color: inherit;
+}
+
+div, span, p, h1, h2, h3, h4, h5, h6 {
+  color: inherit;
+}
+
+/* Special handling for semi-transparent backgrounds */
+.bg-white\/60 {
+  background: rgba(255, 255, 255, 0.6) !important;
+}
+
+[data-theme="dark"] .bg-white\/60 {
+  background: rgba(15, 23, 42, 0.7) !important;
+}
+
+/* Ensure text in semi-transparent containers is visible */
+.bg-white\/60 p,
+.bg-white\/60 span,
+.bg-white\/60 h1,
+.bg-white\/60 h2,
+.bg-white\/60 h3,
+.bg-white\/60 h4,
+.bg-white\/60 h5,
+.bg-white\/60 h6 {
+  color: var(--text-primary) !important;
+}
+
+.bg-white\/60 .text-gray-500 {
+  color: var(--text-tertiary) !important;
+}
+
+.bg-white\/60 .text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+.bg-white\/60 .text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+/* Improve contrast for small text */
+.text-xs.text-gray-500 {
+  color: var(--text-secondary) !important;
+}
+
+.text-xs.text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+/* Ensure backdrop blur elements have proper contrast */
+.backdrop-blur-sm {
+  backdrop-filter: blur(8px);
+}
+
+[data-theme="dark"] .backdrop-blur-sm {
+  background: rgba(15, 23, 42, 0.8) !important;
+}
+
+/* Background opacity overrides for dark mode */
+.bg-white.bg-opacity-20 {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="dark"] .bg-white.bg-opacity-20 {
+  background: rgba(15, 23, 42, 0.7) !important;
+}
+
+/* Gradient background overrides for dark mode */
+.bg-gradient-to-r.from-blue-50 {
+  background: linear-gradient(to right, var(--bg-secondary), var(--bg-tertiary)) !important;
+}
+
+.bg-gradient-to-r.from-green-50 {
+  background: linear-gradient(to right, var(--bg-secondary), var(--bg-tertiary)) !important;
+}
+
+.bg-gradient-to-r.from-purple-50 {
+  background: linear-gradient(to right, var(--bg-secondary), var(--bg-tertiary)) !important;
+}
+
+.bg-gradient-to-r.from-yellow-50 {
+  background: linear-gradient(to right, var(--bg-secondary), var(--bg-tertiary)) !important;
+}
+
+.bg-gradient-to-br.from-emerald-50,
+.bg-gradient-to-br.from-blue-50,
+.bg-gradient-to-br.from-cyan-50,
+.bg-gradient-to-br.from-amber-50,
+.bg-gradient-to-br.from-gray-50 {
+  background: var(--bg-secondary) !important;
+}
+
+[data-theme="dark"] .bg-gradient-to-br.from-emerald-50,
+[data-theme="dark"] .bg-gradient-to-br.from-blue-50,
+[data-theme="dark"] .bg-gradient-to-br.from-cyan-50,
+[data-theme="dark"] .bg-gradient-to-br.from-amber-50,
+[data-theme="dark"] .bg-gradient-to-br.from-gray-50 {
+  background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)) !important;
+}
+
+/* Light color backgrounds that become invisible in dark mode */
+.from-blue-50,
+.from-green-50,
+.from-purple-50,
+.from-yellow-50,
+.from-emerald-50,
+.from-cyan-50,
+.from-amber-50,
+.from-gray-50,
+.to-indigo-50,
+.to-emerald-50,
+.to-pink-50,
+.to-orange-50,
+.to-teal-50,
+.to-sky-50,
+.to-purple-50,
+.to-slate-50,
+.to-gray-100,
+.via-green-50,
+.via-indigo-50,
+.via-sky-50,
+.via-yellow-50,
+.via-slate-50 {
+  background: var(--bg-secondary) !important;
+}
+
+/* Border colors for gradients */
+.border-blue-200,
+.border-green-200,
+.border-purple-200,
+.border-yellow-200 {
+  border-color: var(--border-color) !important;
+}
+
+/* Special handling for IFTA Calculator gradients */
+.bg-gradient-to-r.from-blue-600.via-purple-600.to-indigo-700 {
+  background: linear-gradient(to right, #2563eb, #7c3aed, #4338ca) !important;
+}
+
+[data-theme="dark"] .bg-gradient-to-r.from-blue-600.via-purple-600.to-indigo-700 {
+  background: linear-gradient(to right, #1e40af, #6d28d9, #3730a3) !important;
+}
+
+/* Ensure text is visible on all gradient backgrounds */
+.bg-gradient-to-r *,
+.bg-gradient-to-br * {
+  color: var(--text-primary) !important;
+}
+
+/* White text should stay white */
+.text-white {
+  color: white !important;
+}
+
+/* Handle hover effects for background opacity */
+.hover\:bg-opacity-90:hover {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+[data-theme="dark"] .hover\:bg-opacity-90:hover {
+  background-color: rgba(15, 23, 42, 0.9) !important;
+}
+
+/* Fix for specific problematic white/transparent combinations */
+.via-white\/10 {
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent) !important;
+}
+
+[data-theme="dark"] .via-white\/10 {
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.05), transparent) !important;
+}
+
+/* Additional component-specific overrides */
+.border-gray-200 { 
+  border-color: var(--border-color) !important; 
+}
+
+.shadow-sm { 
+  box-shadow: var(--shadow) !important; 
+}
+
+/* Ensure all containers properly adapt to dark mode */
+[data-theme="dark"] .min-h-screen {
+  background: var(--bg-primary) !important;
+}
+
+/* Fix for specific admin dashboard containers */
+[data-theme="dark"] .min-h-screen.bg-gray-50 {
+  background: var(--bg-primary) !important;
+}
+
+/* Component specific styles that need dark mode support */
+.text-lg.font-semibold.text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+.text-3xl.font-bold.text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+.text-2xl.font-semibold.text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+.text-2xl.font-bold.text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+.font-medium.text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+.font-semibold.text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+/* Specific pattern overrides for components */
+.flex.items-center.justify-between.p-4.bg-gray-50.rounded-lg {
+  background: var(--bg-secondary) !important;
+}
+
+/* Override for all headings that might be hardcoded */
+h1.text-gray-900,
+h2.text-gray-900,
+h3.text-gray-900,
+h4.text-gray-900,
+h5.text-gray-900,
+h6.text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+/* Fix for containers with specific background patterns */
+.rounded-lg.p-6.shadow-sm.border.border-gray-200 {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.bg-white.rounded-lg.p-6.shadow-sm.border.border-gray-200 {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Additional pattern for admin components */
+.bg-white.rounded-lg.p-6.shadow-sm.border.border-gray-200.mb-8 {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Make sure all text in these containers is visible */
+.bg-white.rounded-lg.p-6.shadow-sm.border.border-gray-200 *,
+.rounded-lg.p-6.shadow-sm.border.border-gray-200 * {
+  color: inherit !important;
+}
+
+/* Additional fixes for deeply nested patterns */
+.text-sm.font-medium.text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+.text-sm.text-gray-500 {
+  color: var(--text-tertiary) !important;
+}
+
+/* Loading and error states */
+.min-h-screen.bg-gray-50.flex.items-center.justify-center {
+  background: var(--bg-primary) !important;
+}
+
+/* Ensure consistent application of dark mode */
+[data-theme="dark"] * {
+  border-color: var(--border-color);
+}
+
+/* Override any remaining problematic patterns */
+.p-4.bg-gray-50.rounded-lg {
+  background: var(--bg-secondary) !important;
+}
+
+/* Text color inheritance for all elements */
+p, span, div, h1, h2, h3, h4, h5, h6 {
+  color: inherit;
+}
+
+/* Specific override for stat cards and similar components */
+.bg-white.rounded-lg.p-6 {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.bg-white.rounded-lg.p-6 * {
+  color: inherit !important;
+}
+
+/* Override for icon backgrounds in cards */
+.p-3.rounded-lg.bg-green-50,
+.p-3.rounded-lg.bg-blue-50,
+.p-3.rounded-lg.bg-yellow-50,
+.p-3.rounded-lg.bg-red-50 {
+  background: var(--bg-tertiary) !important;
+}
+
+/* Ensure chart and data visualization containers work */
+.bg-white.rounded-lg.shadow-sm {
+  background: var(--bg-primary) !important;
+}
+
+/* For any remaining edge cases */
+.bg-gray-50 {
+  background: var(--bg-secondary) !important;
+}
+
+/* Maintenance page specific overrides */
+.bg-gray-100 {
+  background: var(--bg-tertiary) !important;
+}
+
+.text-gray-800 {
+  color: var(--text-primary) !important;
+}
+
+.border-gray-300 {
+  border-color: var(--border-color) !important;
+}
+
+.hover\:border-gray-300:hover {
+  border-color: var(--border-color) !important;
+}
+
+.hover\:bg-gray-50:hover {
+  background: var(--bg-tertiary) !important;
+}
+
+.border-t.border-gray-200 {
+  border-color: var(--border-color) !important;
+}
+
+.border-b.border-gray-200 {
+  border-color: var(--border-color) !important;
+}
+
+/* Maintenance form elements */
+.w-full.border.border-gray-300 {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Maintenance gradient patterns */
+.from-gray-50.via-gray-50.to-gray-100 {
+  background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)) !important;
+}
+
+/* Maintenance truck/category selection cards */
+.border-gray-200.bg-white {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.border-gray-200.bg-white.hover\:border-gray-300.hover\:bg-gray-50 {
+  background: var(--bg-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.border-gray-200.bg-white.hover\:border-gray-300.hover\:bg-gray-50:hover {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Maintenance specific text patterns */
+.font-semibold.text-gray-900,
+.font-medium.text-gray-900,
+.font-bold.text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+.capitalize {
+  color: inherit !important;
+}
+
+/* Maintenance page main container */
+.min-h-screen.bg-gray-50.p-6 {
+  background: var(--bg-primary) !important;
+}
+
+/* Maintenance white container overrides */
+.bg-white.p-6.rounded-lg.shadow,
+.bg-white.rounded-lg.shadow.p-6,
+.bg-white.rounded-lg.shadow.p-6.mt-6,
+.bg-white.rounded-lg.shadow {
+  background: var(--bg-primary) !important;
+}
+
+/* Maintenance card headers and content */
+.text-3xl.font-bold.text-gray-900,
+.text-xl.font-semibold.text-gray-900,
+.text-lg.font-semibold.text-gray-900,
+.text-2xl.font-bold.text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+/* Maintenance border patterns */
+.p-6.border-b.border-gray-200 {
+  border-color: var(--border-color) !important;
+}
+
+/* Additional maintenance page specific fixes */
+.text-sm.text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+.text-xs.text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+.text-xs.text-gray-500 {
+  color: var(--text-tertiary) !important;
+}
+
+.text-xl.font-bold.text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+/* Maintenance form labels */
+.block.text-sm.font-medium.text-gray-700 {
+  color: var(--text-secondary) !important;
+}
+
+/* Maintenance add expense form */
+.bg-white.rounded-lg.shadow.p-6.mt-8 {
+  background: var(--bg-primary) !important;
+}
+
+/* Maintenance summary statistics */
+.bg-white.rounded-lg.shadow.p-6.mt-6 {
+  background: var(--bg-primary) !important;
+}
+
+/* Maintenance detailed expense view sections */
+.lg\:col-span-2 .bg-white.rounded-lg.shadow {
+  background: var(--bg-primary) !important;
+}
+
+/* Maintenance expense cards with gradients - ensure text is visible */
+.p-4.rounded-lg.border.bg-gradient-to-r {
+  border-color: var(--border-color) !important;
+}
+
+.p-4.rounded-lg.border.bg-gradient-to-r .text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+.p-4.rounded-lg.border.bg-gradient-to-r .text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+/* Maintenance summary cards */
+.p-4.rounded-lg.bg-gradient-to-r .text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+.p-4.rounded-lg.bg-gradient-to-r .text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+.p-4.rounded-lg.bg-gradient-to-r .text-gray-500 {
+  color: var(--text-tertiary) !important;
+}
+
+/* Empty state text */
+.text-center.py-12 .text-gray-500 {
+  color: var(--text-tertiary) !important;
+}
+
+/* Maintenance grid layouts */
+.grid.grid-cols-2.md\:grid-cols-4.gap-4 .bg-gradient-to-r {
+  border-color: var(--border-color) !important;
+}
+
+/* Ensure all headings in maintenance containers are visible */
+.bg-white.rounded-lg.shadow .text-gray-900,
+.bg-white.rounded-lg.shadow.p-6 .text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+/* Cost badges in maintenance */
+.bg-red-100.text-red-800,
+.bg-yellow-100.text-yellow-800,
+.bg-green-100.text-green-800 {
+  background-color: var(--bg-tertiary) !important;
+}
+
+[data-theme="dark"] .bg-red-100.text-red-800 {
+  background-color: rgba(239, 68, 68, 0.2) !important;
+  color: rgb(252, 165, 165) !important;
+}
+
+[data-theme="dark"] .bg-yellow-100.text-yellow-800 {
+  background-color: rgba(234, 179, 8, 0.2) !important;
+  color: rgb(253, 224, 71) !important;
+}
+
+[data-theme="dark"] .bg-green-100.text-green-800 {
+  background-color: rgba(34, 197, 94, 0.2) !important;
+  color: rgb(134, 239, 172) !important;
+}
+
+/* Force all maintenance page containers to proper dark mode */
+[data-theme="dark"] .bg-white {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .bg-white * {
+  color: inherit !important;
+}
+
+/* Force gradient backgrounds to be more visible in dark mode */
+[data-theme="dark"] .bg-gradient-to-r {
+  background: var(--bg-secondary) !important;
+}
+
+/* Specific maintenance page gradient overrides */
+[data-theme="dark"] .bg-gradient-to-r.from-blue-50.to-blue-100,
+[data-theme="dark"] .bg-gradient-to-r.from-green-50.to-green-100,
+[data-theme="dark"] .bg-gradient-to-r.from-yellow-50.to-yellow-100,
+[data-theme="dark"] .bg-gradient-to-r.from-purple-50.to-purple-100,
+[data-theme="dark"] .bg-gradient-to-r.from-red-50.to-red-100 {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.25)) !important;
+}
+
+/* Fix washed out text in all sections */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6,
+[data-theme="dark"] p,
+[data-theme="dark"] span,
+[data-theme="dark"] div {
+  color: var(--text-primary) !important;
+}
+
+/* Override specific text color classes in dark mode */
+[data-theme="dark"] .text-gray-900,
+[data-theme="dark"] .text-gray-800,
+[data-theme="dark"] .text-gray-700 {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .text-gray-500 {
+  color: var(--text-tertiary) !important;
+}
+
+/* Fix maintenance stat cards visibility */
+[data-theme="dark"] .bg-white.p-6.rounded-lg.shadow {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border: 1px solid rgba(100, 116, 139, 0.3) !important;
+}
+
+/* Fix expense detail cards */
+[data-theme="dark"] .p-4.rounded-lg.border {
+  background: rgba(30, 41, 59, 0.6) !important;
+  border-color: rgba(100, 116, 139, 0.4) !important;
+}
+
+/* Ensure all text is visible with high contrast */
+[data-theme="dark"] * {
+  color: inherit;
+}
+
+/* Fix specific maintenance sections */
+[data-theme="dark"] .lg\:col-span-2 .bg-white {
+  background: rgba(30, 41, 59, 0.8) !important;
+}
+
+/* Fix border visibility */
+[data-theme="dark"] .border-gray-200,
+[data-theme="dark"] .border-gray-300 {
+  border-color: rgba(100, 116, 139, 0.4) !important;
+}
+
+/* Make sure gradients maintain some visual distinction */
+[data-theme="dark"] .bg-gradient-to-r * {
+  color: var(--text-primary) !important;
 }

@@ -15,6 +15,9 @@ import {
   Calculator,
   LucideIcon
 } from 'lucide-react'
+import ThemeToggle from './ThemeToggle'
+import NotificationBar from './NotificationBar'
+import { useTheme } from '../contexts/ThemeContext'
 import '../styles/sidebar.css'
 
 interface LayoutProps {
@@ -54,12 +57,13 @@ const sections = {
 
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation()
+  const { isDarkMode } = useTheme()
 
   const getSectionItems = (sectionKey: string) => 
     navigation.filter(item => item.section === sectionKey)
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
       {/* Enhanced Sidebar with Material Design */}
       <div className="sidebar elevation-2">
         {/* Header with gradient background and enhanced effects */}
@@ -132,7 +136,17 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Main content */}
       <div className="pl-64">
-        <main className="py-8">
+        {/* Top bar with theme toggle */}
+        <div className="top-bar sticky top-0 z-40" style={{ backgroundColor: 'var(--card-bg)', borderBottom: '1px solid var(--border-color)' }}>
+          <div className="flex justify-end items-center px-6 py-4">
+            <ThemeToggle />
+          </div>
+        </div>
+        
+        {/* Notification Bar */}
+        <NotificationBar />
+        
+        <main className="py-8" style={{ backgroundColor: 'var(--bg-secondary)', minHeight: 'calc(100vh - 80px)' }}>
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             {children}
           </div>

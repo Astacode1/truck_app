@@ -1,16 +1,16 @@
-/* Google Material Design Sidebar Styles with Glassy Background */
+/* Google Material Design Sidebar Styles with Theme Support */
 .sidebar {
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
   width: 16rem; /* 256px */
-  /* Glassy background effect */
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  /* Theme-aware glassy background effect */
+  background: var(--sidebar-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 50;
   /* Removed rounded edges */
@@ -36,13 +36,13 @@
   display: flex;
   height: 4rem; /* 64px */
   align-items: center;
-  justify-content: flex-start;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  justify-content: space-between; /* Changed to space-between for theme toggle */
+  border-bottom: 1px solid var(--border-color);
   padding: 0 1.5rem;
-  /* Enhanced glassy gradient */
+  /* Enhanced theme-aware gradient */
   background: linear-gradient(135deg, 
-    rgba(102, 126, 234, 0.8) 0%, 
-    rgba(118, 75, 162, 0.8) 100%);
+    var(--accent-blue) 0%, 
+    var(--accent-blue-hover) 100%);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   color: white;
@@ -121,21 +121,22 @@
 .nav-section-title {
   font-size: 0.75rem;
   font-weight: 600;
-  color: rgba(55, 65, 81, 0.7);
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 1.2px;
   padding: 0.5rem 0.75rem;
   margin-bottom: 0.25rem;
   position: relative;
-  /* Glassy effect for section titles */
-  background: rgba(255, 255, 255, 0.1);
+  /* Theme-aware glassy effect for section titles */
+  background: var(--card-bg);
   backdrop-filter: blur(5px);
   border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
   transition: all 0.3s ease;
 }
 
 .nav-section-title:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--bg-tertiary);
   transform: translateX(2px);
 }
 
@@ -149,12 +150,12 @@
   font-size: 0.875rem;
   font-weight: 500;
   text-decoration: none;
-  color: #374151;
+  color: var(--text-secondary);
   overflow: hidden;
-  /* Enhanced glassy background */
-  background: rgba(255, 255, 255, 0.1);
+  /* Enhanced theme-aware glassy background */
+  background: var(--card-bg);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-color);
   /* Advanced transitions */
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform: translateY(0);
@@ -162,12 +163,12 @@
 
 /* Enhanced hover effects */
 .nav-item:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--bg-tertiary);
   backdrop-filter: blur(12px);
   transform: translateY(-2px) translateX(4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #1f2937;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--accent-blue);
+  color: var(--text-primary);
 }
 
 /* Glowing hover effect */
@@ -210,12 +211,12 @@
 }
 
 .nav-item.active {
-  color: #2563eb;
+  color: var(--accent-blue);
   background: linear-gradient(135deg, 
     rgba(59, 130, 246, 0.2) 0%, 
     rgba(147, 51, 234, 0.1) 100%);
   backdrop-filter: blur(15px);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid var(--accent-blue);
   font-weight: 600;
   transform: translateX(6px);
   box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25);
@@ -230,7 +231,7 @@
   transform: translateY(-50%);
   width: 4px;
   height: 0;
-  background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+  background: linear-gradient(to bottom, var(--accent-blue), var(--accent-blue-hover));
   border-radius: 0 2px 2px 0;
   animation: expandHeight 0.5s ease-out forwards;
 }

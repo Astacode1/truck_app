@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { ThemeProvider } from './contexts/ThemeContext'
 import Layout from './components/Layout'
 import Dashboard from './pages/DashboardPage'
 import Trucks from './pages/Trucks'
@@ -11,8 +12,9 @@ import Maintenance from './pages/Maintenance'
 
 function App() {
   return (
-    <Router>
-      <Layout>
+    <ThemeProvider>
+      <Router>
+        <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/trucks" element={<Trucks />} />
@@ -23,8 +25,9 @@ function App() {
           <Route path="/ifta-form" element={<IFTAFormGenerator />} />
           <Route path="/maintenance" element={<Maintenance />} />
         </Routes>
-      </Layout>
-    </Router>
+        </Layout>
+      </Router>
+    </ThemeProvider>
   )
 }
 
