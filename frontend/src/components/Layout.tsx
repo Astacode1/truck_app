@@ -15,9 +15,9 @@ import {
   Calculator,
   LucideIcon
 } from 'lucide-react'
-import ThemeToggle from './ThemeToggle'
 import NotificationBar from './NotificationBar'
 import { useTheme } from '../contexts/ThemeContext'
+import { useTranslation } from '../contexts/TranslationContext'
 import '../styles/sidebar.css'
 
 interface LayoutProps {
@@ -32,32 +32,50 @@ interface NavigationItem {
   section: string
 }
 
-const navigation: NavigationItem[] = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard, section: 'overview' },
-  { name: 'Analytics', href: '/analytics', icon: BarChart3, section: 'overview' },
+interface NavigationItem {
+  name: string
+  translationKey: string
+  href: string
+  icon: LucideIcon
+  badge?: number
+  section: string
+}
+
+const navigationItems: Omit<NavigationItem, 'name'>[] = [
+  { translationKey: 'nav.dashboard', href: '/', icon: LayoutDashboard, section: 'overview' },
+  { translationKey: 'nav.analytics', href: '/analytics', icon: BarChart3, section: 'overview' },
   
-  { name: 'Trucks', href: '/trucks', icon: Truck, section: 'fleet' },
-  { name: 'Trips', href: '/trips', icon: Route, badge: 3, section: 'fleet' },
-  { name: 'Drivers', href: '/drivers', icon: Users, section: 'fleet' },
+  { translationKey: 'nav.trucks', href: '/trucks', icon: Truck, section: 'fleet' },
+  { translationKey: 'nav.trips', href: '/trips', icon: Route, badge: 3, section: 'fleet' },
+  { translationKey: 'nav.drivers', href: '/drivers', icon: Users, section: 'fleet' },
   
-  { name: 'Invoices', href: '/invoices', icon: Receipt, badge: 2, section: 'financial' },
-  { name: 'IFTA Calculator', href: '/ifta', icon: Calculator, section: 'financial' },
-  { name: 'IFTA Form Generator', href: '/ifta-form', icon: FileText, section: 'financial' },
-  { name: 'Maintenance', href: '/maintenance', icon: Wrench, badge: 2, section: 'operations' },
-  { name: 'Reports', href: '/reports', icon: FileText, section: 'operations' },
-  { name: 'Safety', href: '/safety', icon: Shield, section: 'operations' },
+  { translationKey: 'nav.invoices', href: '/invoices', icon: Receipt, badge: 2, section: 'financial' },
+  { translationKey: 'nav.ifta_calculator', href: '/ifta', icon: Calculator, section: 'financial' },
+  { translationKey: 'nav.ifta_form', href: '/ifta-form', icon: FileText, section: 'financial' },
+  { translationKey: 'nav.maintenance', href: '/maintenance', icon: Wrench, badge: 2, section: 'operations' },
+  { translationKey: 'nav.reports', href: '/reports', icon: FileText, section: 'operations' },
+  { translationKey: 'nav.safety', href: '/safety', icon: Shield, section: 'operations' },
+  { translationKey: 'nav.settings', href: '/settings', icon: Settings, section: 'system' },
 ]
 
-const sections = {
+const sectionKeys = {
   overview: 'Overview',
-  fleet: 'Fleet Management',
+  fleet: 'Fleet Management', 
   financial: 'Financial',
-  operations: 'Operations'
+  operations: 'Operations',
+  system: 'System'
 }
 
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation()
   const { isDarkMode } = useTheme()
+  const { t } = useTranslation()
+
+  // Create navigation with translated names
+  const navigation: NavigationItem[] = navigationItems.map(item => ({
+    ...item,
+    name: t(item.translationKey)
+  }))
 
   const getSectionItems = (sectionKey: string) => 
     navigation.filter(item => item.section === sectionKey)
@@ -76,7 +94,7 @@ export default function Layout({ children }: LayoutProps) {
 
         {/* Navigation */}
         <nav className="sidebar-nav">
-          {Object.entries(sections).map(([sectionKey, sectionTitle]) => (
+          {Object.entries(sectionKeys).map(([sectionKey, sectionTitle]) => (
             <div key={sectionKey} className="nav-section">
               <div className="nav-section-title">
                 {sectionTitle}
@@ -136,13 +154,6 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Main content */}
       <div className="pl-64">
-        {/* Top bar with theme toggle */}
-        <div className="top-bar sticky top-0 z-40" style={{ backgroundColor: 'var(--card-bg)', borderBottom: '1px solid var(--border-color)' }}>
-          <div className="flex justify-end items-center px-6 py-4">
-            <ThemeToggle />
-          </div>
-        </div>
-        
         {/* Notification Bar */}
         <NotificationBar />
         

@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useTranslation } from '../contexts/TranslationContext';
 
 export default function Maintenance() {
+  const { t } = useTranslation();
   // Sample truck maintenance data with expenses
   const [trucks, setTrucks] = useState([
     {
@@ -343,39 +345,39 @@ export default function Maintenance() {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="mx-auto max-w-7xl">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Truck Maintenance & Expenses</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{t('maintenance.title')}</h1>
           <button className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
-            📊 Generate Report
+            📊 {t('maintenance.generateReport')}
           </button>
         </div>
 
         {/* Fleet Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Total Fleet</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('maintenance.totalFleet')}</h3>
             <p className="text-3xl font-bold text-blue-600">{trucks.length}</p>
-            <p className="text-sm text-gray-600">Active Trucks</p>
+            <p className="text-sm text-gray-600">{t('maintenance.activeTrucks')}</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Monthly Expenses</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('maintenance.monthlyExpenses')}</h3>
             <p className="text-3xl font-bold text-red-600">
               ${trucks.reduce((total, truck) => total + calculateTotalExpenses(truck), 0).toLocaleString()}
             </p>
-            <p className="text-sm text-gray-600">All Categories</p>
+            <p className="text-sm text-gray-600">{t('maintenance.allCategories')}</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Avg per Truck</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('maintenance.avgPerTruck')}</h3>
             <p className="text-3xl font-bold text-purple-600">
               ${Math.round(trucks.reduce((total, truck) => total + calculateTotalExpenses(truck), 0) / trucks.length).toLocaleString()}
             </p>
-            <p className="text-sm text-gray-600">Monthly Average</p>
+            <p className="text-sm text-gray-600">{t('maintenance.monthlyAverage')}</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">In Maintenance</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('maintenance.inMaintenance')}</h3>
             <p className="text-3xl font-bold text-yellow-600">
               {trucks.filter(truck => truck.status === 'maintenance').length}
             </p>
-            <p className="text-sm text-gray-600">Currently</p>
+            <p className="text-sm text-gray-600">{t('maintenance.currently')}</p>
           </div>
         </div>
 
@@ -383,7 +385,7 @@ export default function Maintenance() {
           {/* Truck Selection */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">🚛 Select Truck</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">🚛 {t('maintenance.selectTruck')}</h2>
               <div className="space-y-4">
                 {trucks.map((truck) => (
                   <div
@@ -398,16 +400,19 @@ export default function Maintenance() {
                     <div className="flex justify-between items-center mb-2">
                       <h3 className="font-semibold text-gray-900">{truck.id}</h3>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(truck.status)}`}>
-                        {truck.status.replace('_', ' ').toUpperCase()}
+                        {truck.status === 'active' ? t('maintenance.active').toUpperCase() : 
+                         truck.status === 'maintenance' ? t('maintenance.maintenanceStatus').toUpperCase() :
+                         truck.status === 'inactive' ? t('maintenance.inactive').toUpperCase() : 
+                         truck.status.replace('_', ' ').toUpperCase()}
                       </span>
                     </div>
                     <p className="text-sm text-gray-600">{truck.model} ({truck.year})</p>
-                    <p className="text-sm text-gray-600">{truck.mileage.toLocaleString()} miles</p>
+                    <p className="text-sm text-gray-600">{truck.mileage.toLocaleString()} {t('maintenance.miles')}</p>
                     <div className="mt-2 pt-2 border-t border-gray-200">
                       <p className="text-lg font-bold text-green-600">
                         ${calculateTotalExpenses(truck).toLocaleString()}
                       </p>
-                      <p className="text-xs text-gray-500">Total Monthly Expenses</p>
+                      <p className="text-xs text-gray-500">{t('maintenance.totalMonthlyExpenses')}</p>
                     </div>
                   </div>
                 ))}
@@ -416,7 +421,7 @@ export default function Maintenance() {
 
             {/* Expense Categories */}
             <div className="bg-white rounded-lg shadow p-6 mt-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">💰 Expense Categories</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">💰 {t('maintenance.expenseCategories')}</h2>
               <div className="space-y-3">
                 {['repair', 'upkeep', 'miscellaneous', 'materials'].map((category) => (
                   <div
@@ -453,17 +458,17 @@ export default function Maintenance() {
                 <div className="flex justify-between items-center">
                   <div>
                     <h2 className="text-xl font-semibold text-gray-900">
-                      {getCategoryIcon(selectedExpenseType)} {selectedTruck.id} - {selectedExpenseType.charAt(0).toUpperCase() + selectedExpenseType.slice(1)} Expenses
+                      {getCategoryIcon(selectedExpenseType)} {selectedTruck.id} - {selectedExpenseType.charAt(0).toUpperCase() + selectedExpenseType.slice(1)} {t('maintenance.expenses')}
                     </h2>
                     <p className="text-sm text-gray-600 mt-1">
-                      {selectedTruck.model} • Last Maintenance: {selectedTruck.lastMaintenance}
+                      {selectedTruck.model} • {t('maintenance.lastMaintenance')}: {selectedTruck.lastMaintenance}
                     </p>
                   </div>
                   <div className="text-right">
                     <p className="text-2xl font-bold text-gray-900">
                       ${calculateCategoryTotal(selectedTruck, selectedExpenseType).toLocaleString()}
                     </p>
-                    <p className="text-sm text-gray-600">Category Total</p>
+                    <p className="text-sm text-gray-600">{t('maintenance.categoryTotal')}</p>
                   </div>
                 </div>
               </div>
@@ -488,16 +493,16 @@ export default function Maintenance() {
                               expense.cost > 500 ? 'bg-yellow-100 text-yellow-800' :
                               'bg-green-100 text-green-800'
                             }`}>
-                              {expense.cost > 1000 ? 'High Cost' :
-                               expense.cost > 500 ? 'Medium Cost' :
-                               'Low Cost'}
+                              {expense.cost > 1000 ? t('maintenance.highCost') :
+                               expense.cost > 500 ? t('maintenance.mediumCost') :
+                               t('maintenance.lowCost')}
                             </span>
                             <button
                               onClick={() => deleteExpense(selectedTruck.id, selectedExpenseType, index)}
                               className="mt-2 px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition-colors"
-                              title="Delete expense"
+                              title={t('maintenance.deleteExpense')}
                             >
-                              🗑️ Delete
+                              🗑️ {t('maintenance.delete')}
                             </button>
                           </div>
                         </div>
@@ -506,7 +511,7 @@ export default function Maintenance() {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <p className="text-gray-500">No {selectedExpenseType} expenses recorded</p>
+                    <p className="text-gray-500">{t('maintenance.noExpenses')} {selectedExpenseType} {t('maintenance.expensesRecorded')}</p>
                   </div>
                 )}
               </div>
@@ -514,7 +519,7 @@ export default function Maintenance() {
 
             {/* Summary Statistics */}
             <div className="bg-white rounded-lg shadow p-6 mt-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">📈 Expense Summary for {selectedTruck.id}</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">📈 {t('maintenance.expenseSummary')} {selectedTruck.id}</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {['repair', 'upkeep', 'miscellaneous', 'materials'].map((category) => (
                   <div 
@@ -534,14 +539,14 @@ export default function Maintenance() {
                       </p>
                       <p className="text-xs text-gray-600 capitalize font-semibold">{category}</p>
                       <p className="text-xs text-gray-500">
-                        {selectedTruck.expenses[category].length} entries
+                        {selectedTruck.expenses[category].length} {t('maintenance.entries')}
                       </p>
                       <button className={`text-xs mt-2 px-3 py-1 rounded-full font-semibold transition-colors ${
                         expandedCategory === category 
                           ? 'bg-blue-600 text-white' 
                           : 'bg-white text-blue-600 border border-blue-600'
                       }`}>
-                        {expandedCategory === category ? '▲ Hide Details' : '▼ Show Details'}
+                        {expandedCategory === category ? `▲ ${t('maintenance.hideDetails')}` : `▼ ${t('maintenance.showDetails')}`}
                       </button>
                     </div>
                   </div>
@@ -553,9 +558,9 @@ export default function Maintenance() {
                 <div className="mt-6 border-t pt-6">
                   <h4 className="text-md font-semibold text-gray-900 mb-4 flex items-center gap-2">
                     {getCategoryIcon(expandedCategory)}
-                    <span className="capitalize">{expandedCategory}</span> - Detailed Breakdown
+                    <span className="capitalize">{expandedCategory}</span> - {t('maintenance.detailedBreakdown')}
                     <span className="ml-auto text-blue-600">
-                      Total: ${calculateCategoryTotal(selectedTruck, expandedCategory).toLocaleString()}
+                      {t('maintenance.total')}: ${calculateCategoryTotal(selectedTruck, expandedCategory).toLocaleString()}
                     </span>
                   </h4>
                   
@@ -586,7 +591,7 @@ export default function Maintenance() {
                                 ${expense.cost.toLocaleString()}
                               </p>
                               <p className="text-xs text-gray-500">
-                                {((expense.cost / calculateCategoryTotal(selectedTruck, expandedCategory)) * 100).toFixed(1)}% of total
+                                {((expense.cost / calculateCategoryTotal(selectedTruck, expandedCategory)) * 100).toFixed(1)}% {t('maintenance.ofTotal')}
                               </p>
                             </div>
                             <button
@@ -656,8 +661,8 @@ export default function Maintenance() {
                   <div className="flex items-center gap-3">
                     <span className="text-3xl">💵</span>
                     <div>
-                      <p className="font-bold text-white text-lg">GRAND TOTAL</p>
-                      <p className="text-xs text-blue-100">All expenses combined</p>
+                      <p className="font-bold text-white text-lg">{t('maintenance.grandTotal')}</p>
+                      <p className="text-xs text-blue-100">{t('maintenance.allExpensesCombined')}</p>
                     </div>
                   </div>
                   <div className="text-right">
@@ -665,7 +670,7 @@ export default function Maintenance() {
                       ${calculateTotalExpenses(selectedTruck).toLocaleString()}
                     </p>
                     <p className="text-xs text-blue-100">
-                      {String(Object.values(selectedTruck.expenses).reduce((sum: number, arr: any) => sum + arr.length, 0))} total entries
+                      {String(Object.values(selectedTruck.expenses).reduce((sum: number, arr: any) => sum + arr.length, 0))} {t('maintenance.totalEntries')}
                     </p>
                   </div>
                 </div>
@@ -675,9 +680,9 @@ export default function Maintenance() {
             {/* All Entries View - Complete Itemized List */}
             <div className="bg-white rounded-lg shadow-lg p-6 mt-6 border-t-4 border-blue-600">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-gray-900">📋 All Entries - Complete Itemized List</h3>
+                <h3 className="text-xl font-bold text-gray-900">📋 {t('maintenance.allEntries')}</h3>
                 <span className="text-sm text-gray-600">
-                  {String(Object.values(selectedTruck.expenses).reduce((sum: number, arr: any) => sum + arr.length, 0))} total entries
+                  {String(Object.values(selectedTruck.expenses).reduce((sum: number, arr: any) => sum + arr.length, 0))} {t('maintenance.totalEntries')}
                 </span>
               </div>
               
@@ -752,7 +757,11 @@ export default function Maintenance() {
                       {/* Category Subtotal */}
                       <div className="flex justify-between items-center mt-2 p-2 bg-blue-50 rounded border border-blue-200">
                         <span className="text-sm font-semibold text-blue-900">
-                          {category.charAt(0).toUpperCase() + category.slice(1)} Subtotal ({categoryExpenses.length} entries)
+                          {category === 'repair' ? t('maintenance.repair') :
+                           category === 'upkeep' ? t('maintenance.upkeep') :
+                           category === 'miscellaneous' ? t('maintenance.miscellaneous') :
+                           category === 'materials' ? t('maintenance.materials') :
+                           category.charAt(0).toUpperCase() + category.slice(1)} {t('maintenance.subtotal')} ({categoryExpenses.length} {t('maintenance.entries')})
                         </span>
                         <span className="text-sm font-bold text-blue-900">
                           ${calculateCategoryTotal(selectedTruck, category).toLocaleString()}
@@ -788,39 +797,39 @@ export default function Maintenance() {
 
         {/* Add New Expense Form */}
         <div className="bg-white rounded-lg shadow p-6 mt-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">➕ Quick Actions</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">➕ {t('maintenance.quickActions')}</h2>
           <div className="flex flex-wrap gap-4">
             <button
               onClick={() => setShowAddExpenseModal(true)}
               className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
             >
-              <span>➕</span> Add Expense
+              <span>➕</span> {t('maintenance.addExpense')}
             </button>
             <button
               onClick={() => handleEditTruck(selectedTruck)}
               className="bg-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors flex items-center gap-2"
             >
-              <span>✏️</span> Edit Truck
+              <span>✏️</span> {t('maintenance.editTruck')}
             </button>
             <button
               onClick={() => scheduleMaintenance(selectedTruck.id)}
               className="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center gap-2"
             >
-              <span>📅</span> Schedule Maintenance
+              <span>📅</span> {t('maintenance.scheduleMaintenance')}
             </button>
             {selectedTruck.status === 'active' ? (
               <button
                 onClick={() => updateTruckStatus(selectedTruck.id, 'maintenance')}
                 className="bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-yellow-700 transition-colors flex items-center gap-2"
               >
-                <span>🔧</span> Mark In Maintenance
+                <span>🔧</span> {t('maintenance.markInMaintenance')}
               </button>
             ) : (
               <button
                 onClick={() => updateTruckStatus(selectedTruck.id, 'active')}
                 className="bg-emerald-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors flex items-center gap-2"
               >
-                <span>✅</span> Mark Active
+                <span>✅</span> {t('maintenance.markActive')}
               </button>
             )}
           </div>
@@ -841,14 +850,14 @@ export default function Maintenance() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900">Add New Expense</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{t('maintenance.addNewExpense')}</h2>
             </div>
             
             <form onSubmit={handleAddExpense} className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Truck <span className="text-red-500">*</span>
+                    {t('maintenance.truck')} <span className="text-red-500">*</span>
                   </label>
                   <select
                     name="truckId"
@@ -857,7 +866,7 @@ export default function Maintenance() {
                     required
                     className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="">Select Truck</option>
+                    <option value="">{t('maintenance.selectTruck')}</option>
                     {trucks.map((truck) => (
                       <option key={truck.id} value={truck.id}>
                         {truck.id} - {truck.model}
@@ -868,7 +877,7 @@ export default function Maintenance() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Category <span className="text-red-500">*</span>
+                    {t('maintenance.category')} <span className="text-red-500">*</span>
                   </label>
                   <select
                     name="category"
@@ -877,16 +886,16 @@ export default function Maintenance() {
                     required
                     className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="repair">🔧 Repair</option>
-                    <option value="upkeep">🛠️ Upkeep</option>
-                    <option value="miscellaneous">📋 Miscellaneous</option>
-                    <option value="materials">📦 Materials</option>
+                    <option value="repair">🔧 {t('maintenance.repair')}</option>
+                    <option value="upkeep">🛠️ {t('maintenance.upkeep')}</option>
+                    <option value="miscellaneous">📋 {t('maintenance.miscellaneous')}</option>
+                    <option value="materials">📦 {t('maintenance.materials')}</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Date <span className="text-red-500">*</span>
+                    {t('maintenance.date')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="date"
@@ -900,7 +909,7 @@ export default function Maintenance() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Cost <span className="text-red-500">*</span>
+                    {t('maintenance.cost')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
@@ -917,14 +926,14 @@ export default function Maintenance() {
 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Description <span className="text-red-500">*</span>
+                    {t('maintenance.description')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     name="description"
                     value={expenseFormData.description}
                     onChange={handleExpenseInputChange}
-                    placeholder="e.g., Brake pad replacement"
+                    placeholder={t('maintenance.descriptionPlaceholder')}
                     required
                     className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
@@ -932,14 +941,14 @@ export default function Maintenance() {
 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Vendor <span className="text-red-500">*</span>
+                    {t('maintenance.vendor')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     name="vendor"
                     value={expenseFormData.vendor}
                     onChange={handleExpenseInputChange}
-                    placeholder="e.g., AutoZone"
+                    placeholder={t('maintenance.vendorPlaceholder')}
                     required
                     className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
@@ -952,13 +961,13 @@ export default function Maintenance() {
                   onClick={() => setShowAddExpenseModal(false)}
                   className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
-                  Cancel
+                  {t('maintenance.cancel')}
                 </button>
                 <button
                   type="submit"
                   className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
-                  Add Expense
+                  {t('maintenance.addExpense')}
                 </button>
               </div>
             </form>
@@ -971,21 +980,21 @@ export default function Maintenance() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900">Edit Truck Details - {selectedTruck.id}</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{t('maintenance.editTruckDetails')} - {selectedTruck.id}</h2>
             </div>
             
             <form onSubmit={handleSaveTruckEdit} className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Model <span className="text-red-500">*</span>
+                    {t('maintenance.model')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     name="model"
                     value={truckFormData.model}
                     onChange={handleTruckInputChange}
-                    placeholder="e.g., Volvo VNL 760"
+                    placeholder={t('maintenance.modelPlaceholder')}
                     required
                     className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
@@ -993,7 +1002,7 @@ export default function Maintenance() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Year <span className="text-red-500">*</span>
+                    {t('maintenance.year')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
@@ -1010,7 +1019,7 @@ export default function Maintenance() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Mileage <span className="text-red-500">*</span>
+                    {t('maintenance.mileage')} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
@@ -1026,7 +1035,7 @@ export default function Maintenance() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Status <span className="text-red-500">*</span>
+                    {t('maintenance.status')} <span className="text-red-500">*</span>
                   </label>
                   <select
                     name="status"
@@ -1035,15 +1044,15 @@ export default function Maintenance() {
                     required
                     className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="active">Active</option>
-                    <option value="maintenance">Maintenance</option>
-                    <option value="inactive">Inactive</option>
+                    <option value="active">{t('maintenance.active')}</option>
+                    <option value="maintenance">{t('maintenance.maintenanceStatus')}</option>
+                    <option value="inactive">{t('maintenance.inactive')}</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Last Maintenance
+                    {t('maintenance.lastMaintenance')}
                   </label>
                   <input
                     type="date"
@@ -1056,7 +1065,7 @@ export default function Maintenance() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Next Maintenance
+                    {t('maintenance.nextMaintenance')}
                   </label>
                   <input
                     type="date"
@@ -1074,13 +1083,13 @@ export default function Maintenance() {
                   onClick={() => setShowEditTruckModal(false)}
                   className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
-                  Cancel
+                  {t('maintenance.cancel')}
                 </button>
                 <button
                   type="submit"
                   className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
                 >
-                  Save Changes
+                  {t('maintenance.saveChanges')}
                 </button>
               </div>
             </form>

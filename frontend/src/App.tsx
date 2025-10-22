@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ThemeProvider } from './contexts/ThemeContext'
+import { TranslationProvider } from './contexts/TranslationContext'
 import Layout from './components/Layout'
 import Dashboard from './pages/DashboardPage'
 import Trucks from './pages/Trucks'
@@ -9,12 +10,14 @@ import Invoices from './pages/Invoices'
 import IFTACalculator from './pages/IFTACalculator'
 import IFTAFormGenerator from './pages/IFTAFormGenerator'
 import Maintenance from './pages/Maintenance'
+import Settings from './pages/Settings'
 
 function App() {
   return (
     <ThemeProvider>
-      <Router>
-        <Layout>
+      <TranslationProvider>
+        <Router>
+          <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/trucks" element={<Trucks />} />
@@ -24,9 +27,11 @@ function App() {
           <Route path="/ifta" element={<IFTACalculator />} />
           <Route path="/ifta-form" element={<IFTAFormGenerator />} />
           <Route path="/maintenance" element={<Maintenance />} />
+          <Route path="/settings" element={<Settings />} />
         </Routes>
         </Layout>
       </Router>
+      </TranslationProvider>
     </ThemeProvider>
   )
 }
