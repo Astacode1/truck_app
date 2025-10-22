@@ -1,7 +1,8 @@
-export default // Driver Management Page - Enhanced with color themes
-function Drivers() {
-  // Mock driver data
-  const drivers = [
+import { useState, useEffect } from 'react';
+
+export default function Drivers() {
+  // Initial default drivers data
+  const defaultDrivers = [
     {
       id: 1,
       name: "John Martinez",
@@ -78,6 +79,214 @@ function Drivers() {
     }
   ];
 
+  // Load drivers from localStorage or use default data
+  const loadDriversFromStorage = () => {
+    try {
+      const savedDrivers = localStorage.getItem('truckManagement_drivers');
+      if (savedDrivers) {
+        return JSON.parse(savedDrivers);
+      }
+      return defaultDrivers;
+    } catch (error) {
+      console.error('Error loading drivers from localStorage:', error);
+      return defaultDrivers;
+    }
+  };
+
+  // Initialize state with data from localStorage
+  const [drivers, setDrivers] = useState(loadDriversFromStorage);
+
+  // Save drivers to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('truckManagement_drivers', JSON.stringify(drivers));
+    } catch (error) {
+      console.error('Error saving drivers to localStorage:', error);
+    }
+  }, [drivers]);
+
+  // State management
+  const [showAddDriverModal, setShowAddDriverModal] = useState(false);
+  const [showEditDriverModal, setShowEditDriverModal] = useState(false);
+  const [showViewProfileModal, setShowViewProfileModal] = useState(false);
+  const [selectedDriver, setSelectedDriver] = useState<any>(null);
+  const [notification, setNotification] = useState<any>(null);
+
+  // Form data state for adding driver
+  const [newDriverForm, setNewDriverForm] = useState({
+    name: '',
+    licenseNumber: '',
+    phone: '',
+    email: '',
+    experience: '',
+    location: '',
+    cdlClass: '',
+    cdlExpiry: '',
+    dotMedicalExpiry: '',
+    endorsement: '',
+    emergencyName: '',
+    emergencyRelationship: '',
+    emergencyPhone: ''
+  });
+
+  // Form data state for editing driver
+  const [editDriverForm, setEditDriverForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    location: '',
+    status: 'active',
+    currentTruck: ''
+  });
+
+  // Show notification
+  const showNotification = (message: string, type = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3000);
+  };
+
+  // Handle input change for new driver form
+  const handleNewDriverInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setNewDriverForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Handle input change for edit driver form
+  const handleEditDriverInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setEditDriverForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Add new driver
+  const handleAddDriver = (e: any) => {
+    e.preventDefault();
+    
+    const newDriver: any = {
+      id: drivers.length + 1,
+      name: newDriverForm.name,
+      licenseNumber: newDriverForm.licenseNumber,
+      phone: newDriverForm.phone,
+      email: newDriverForm.email,
+      status: 'active',
+      experience: newDriverForm.experience,
+      currentTruck: 'Unassigned',
+      location: newDriverForm.location,
+      rating: 0,
+      totalTrips: 0,
+      profileImage: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+      qualifications: [
+        { 
+          type: `CDL Class ${newDriverForm.cdlClass}`, 
+          issueDate: new Date().toISOString().split('T')[0], 
+          expiryDate: newDriverForm.cdlExpiry, 
+          status: 'valid' 
+        },
+        { 
+          type: "DOT Medical Certificate", 
+          issueDate: new Date().toISOString().split('T')[0], 
+          expiryDate: newDriverForm.dotMedicalExpiry, 
+          status: 'valid' 
+        }
+      ],
+      emergencyContact: {
+        name: newDriverForm.emergencyName,
+        relationship: newDriverForm.emergencyRelationship,
+        phone: newDriverForm.emergencyPhone
+      }
+    };
+
+    if (newDriverForm.endorsement) {
+      newDriver.qualifications.push({
+        type: newDriverForm.endorsement,
+        issueDate: new Date().toISOString().split('T')[0],
+        expiryDate: new Date(new Date().setFullYear(new Date().getFullYear() + 2)).toISOString().split('T')[0],
+        status: 'valid'
+      });
+    }
+
+    setDrivers(prev => [...prev, newDriver]);
+    showNotification(`Driver ${newDriverForm.name} hired successfully!`);
+    setShowAddDriverModal(false);
+    
+    // Reset form
+    setNewDriverForm({
+      name: '',
+      licenseNumber: '',
+      phone: '',
+      email: '',
+      experience: '',
+      location: '',
+      cdlClass: '',
+      cdlExpiry: '',
+      dotMedicalExpiry: '',
+      endorsement: '',
+      emergencyName: '',
+      emergencyRelationship: '',
+      emergencyPhone: ''
+    });
+  };
+
+  // Edit driver
+  const handleEditDriver = (driver: any) => {
+    setSelectedDriver(driver);
+    setEditDriverForm({
+      name: driver.name,
+      phone: driver.phone,
+      email: driver.email,
+      location: driver.location,
+      status: driver.status,
+      currentTruck: driver.currentTruck
+    });
+    setShowEditDriverModal(true);
+  };
+
+  // Save driver edits
+  const handleSaveDriverEdit = (e: any) => {
+    e.preventDefault();
+    
+    setDrivers(prev => prev.map(driver => {
+      if (driver.id === selectedDriver.id) {
+        return {
+          ...driver,
+          name: editDriverForm.name,
+          phone: editDriverForm.phone,
+          email: editDriverForm.email,
+          location: editDriverForm.location,
+          status: editDriverForm.status,
+          currentTruck: editDriverForm.currentTruck
+        };
+      }
+      return driver;
+    }));
+
+    showNotification(`Driver ${editDriverForm.name} updated successfully!`);
+    setShowEditDriverModal(false);
+    setSelectedDriver(null);
+  };
+
+  // Delete driver
+  const handleDeleteDriver = (driverId: number, driverName: string) => {
+    if (confirm(`Are you sure you want to remove ${driverName} from the system?`)) {
+      setDrivers(prev => prev.filter(driver => driver.id !== driverId));
+      showNotification(`Driver ${driverName} removed successfully`);
+      setShowViewProfileModal(false);
+    }
+  };
+
+  // View driver profile
+  const handleViewProfile = (driver: any) => {
+    setSelectedDriver(driver);
+    setShowViewProfileModal(true);
+  };
+
+  // Update driver status
+  const updateDriverStatus = (driverId: number, newStatus: string) => {
+    setDrivers(prev => prev.map(driver => 
+      driver.id === driverId ? { ...driver, status: newStatus } : driver
+    ));
+    showNotification(`Driver status updated to ${newStatus}`);
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active': return 'bg-green-100 text-green-800';
@@ -145,10 +354,23 @@ function Drivers() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
+      {/* Notification */}
+      {notification && (
+        <div className={`fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 ${
+          notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        } text-white animate-fade-in`}>
+          {notification.message}
+        </div>
+      )}
+
       <div className="mx-auto max-w-7xl">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Driver Management</h1>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
+          <button 
+            type="button"
+            onClick={() => setShowAddDriverModal(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
+          >
             🚛 Hire New Driver
           </button>
         </div>
@@ -188,9 +410,6 @@ function Drivers() {
                 key={driver.id} 
                 className={`${cardTheme.background} ${cardTheme.border} ${cardTheme.shadow} ${cardTheme.glow} ${cardTheme.accent} rounded-xl p-6 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 relative overflow-hidden`}
               >
-                {/* Animated gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                
                 {/* Driver Header */}
                 <div className="flex items-center mb-4 relative z-10">
                   <div className="relative">
@@ -199,7 +418,6 @@ function Drivers() {
                       alt={driver.name}
                       className="w-16 h-16 rounded-full object-cover mr-4 ring-4 ring-white/50 shadow-lg"
                     />
-                    {/* Status indicator dot */}
                     <div className={`absolute -top-1 -right-1 w-5 h-5 rounded-full border-2 border-white ${
                       driver.status === 'active' ? 'bg-green-500 animate-pulse' : 
                       driver.status === 'on_leave' ? 'bg-yellow-500' : 'bg-red-500'
@@ -254,93 +472,39 @@ function Drivers() {
                   <div className="bg-white/60 rounded-lg p-3 backdrop-blur-sm">
                     <p className="text-xs text-gray-500 uppercase tracking-wide">Phone</p>
                     <p className="text-sm font-medium text-gray-900">{driver.phone}</p>
-                    <button className="text-xs text-blue-600 hover:text-blue-800 transition-colors">
+                    <button 
+                      type="button"
+                      onClick={() => window.location.href = `tel:${driver.phone}`}
+                      className="text-xs text-blue-600 hover:text-blue-800 transition-colors"
+                    >
                       📞 Call
                     </button>
                   </div>
                 </div>
 
-                {/* Qualifications */}
-                <div className="mb-4 relative z-10">
-                  <h4 className="text-sm font-medium text-gray-900 mb-2">🏆 Qualifications</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {driver.qualifications.map((qual, index) => (
-                      <span 
-                        key={index}
-                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                          qual.status === 'valid' ? 'bg-green-100 text-green-800 border border-green-200' :
-                          qual.status === 'expiring_soon' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200' :
-                          'bg-red-100 text-red-800 border border-red-200'
-                        }`}
-                      >
-                        {qual.type}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Emergency Contact */}
-                <div className="mb-4 relative z-10">
-                  <h4 className="text-sm font-medium text-gray-900 mb-2">🚨 Emergency Contact</h4>
-                  <div className="bg-white/60 rounded-lg p-3 backdrop-blur-sm">
-                    <p className="text-sm font-medium text-gray-900">{driver.emergencyContact.name}</p>
-                    <p className="text-xs text-gray-600">{driver.emergencyContact.relationship}</p>
-                    <p className="text-xs text-gray-600">{driver.emergencyContact.phone}</p>
-                  </div>
-                </div>
-
-                {/* Recent Performance */}
-                <div className="mb-4 relative z-10">
-                  <h4 className="text-sm font-medium text-gray-900 mb-2">� Recent Performance</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-600">On-time Delivery</span>
-                      <div className="flex items-center">
-                        <div className="w-20 bg-gray-200 rounded-full h-2 mr-2">
-                          <div 
-                            className="bg-green-500 h-2 rounded-full transition-all duration-500" 
-                            style={{ width: `${Math.round(driver.rating * 20)}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-xs font-medium text-gray-900">{Math.round(driver.rating * 20)}%</span>
-                      </div>
-                    </div>
-                    
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-600">Safety Score</span>
-                      <div className="flex items-center">
-                        <div className="w-20 bg-gray-200 rounded-full h-2 mr-2">
-                          <div 
-                            className="bg-blue-500 h-2 rounded-full transition-all duration-500" 
-                            style={{ width: `${Math.round(85)}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-xs font-medium text-gray-900">85%</span>
-                      </div>
-                    </div>
-                    
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-600">Customer Rating</span>
-                      <div className="flex items-center">
-                        <div className="w-20 bg-gray-200 rounded-full h-2 mr-2">
-                          <div 
-                            className="bg-purple-500 h-2 rounded-full transition-all duration-500" 
-                            style={{ width: `${Math.round(driver.rating * 18)}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-xs font-medium text-gray-900">{Math.round(driver.rating * 18)}%</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Action Buttons */}
                 <div className="flex gap-2 relative z-10">
-                  <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors shadow-lg hover:shadow-xl">
-                    �️ View Profile
+                  <button 
+                    type="button"
+                    onClick={() => handleViewProfile(driver)}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors shadow-lg hover:shadow-xl"
+                  >
+                    👁️ View
                   </button>
-                  <button className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors shadow-lg hover:shadow-xl">
-                    � Assign Trip
+                  <button 
+                    type="button"
+                    onClick={() => handleEditDriver(driver)}
+                    className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors shadow-lg hover:shadow-xl"
+                  >
+                    ✏️ Edit
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => handleDeleteDriver(driver.id, driver.name)}
+                    className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors shadow-lg hover:shadow-xl"
+                    title="Delete Driver"
+                  >
+                    🗑️
                   </button>
                 </div>
               </div>
@@ -348,145 +512,486 @@ function Drivers() {
           })}
         </div>
 
-        {/* Add New Driver Form */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">🚛 Hire New Driver</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Personal Information */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-              <input
-                type="text"
-                placeholder="e.g., John Smith"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-              <input
-                type="tel"
-                placeholder="(555) 123-4567"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-              <input
-                type="email"
-                placeholder="john.smith@email.com"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">License Number</label>
-              <input
-                type="text"
-                placeholder="DL123456789"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Years of Experience</label>
-              <select className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Select experience</option>
-                <option value="1-2">1-2 years</option>
-                <option value="3-5">3-5 years</option>
-                <option value="6-10">6-10 years</option>
-                <option value="10+">10+ years</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-              <input
-                type="text"
-                placeholder="e.g., Los Angeles, CA"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* Qualifications */}
-            <div className="col-span-full">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">📋 Required Qualifications</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">CDL Class</label>
-                  <select className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Select CDL class</option>
-                    <option value="A">Class A</option>
-                    <option value="B">Class B</option>
-                    <option value="C">Class C</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">CDL Expiry Date</label>
-                  <input
-                    type="date"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">DOT Medical Expiry</label>
-                  <input
-                    type="date"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Additional Endorsements</label>
-                  <select className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Select endorsement</option>
-                    <option value="hazmat">Hazmat</option>
-                    <option value="passenger">Passenger</option>
-                    <option value="school_bus">School Bus</option>
-                    <option value="tanker">Tanker</option>
-                  </select>
-                </div>
+        {/* Add New Driver Modal */}
+        {showAddDriverModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-gray-200">
+                <h2 className="text-2xl font-bold text-gray-900">🚛 Hire New Driver</h2>
               </div>
-            </div>
+              
+              <form onSubmit={handleAddDriver} className="p-6 space-y-6">
+                {/* Personal Information */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">📋 Personal Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Full Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={newDriverForm.name}
+                        onChange={handleNewDriverInputChange}
+                        placeholder="e.g., John Smith"
+                        required
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Phone Number <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={newDriverForm.phone}
+                        onChange={handleNewDriverInputChange}
+                        placeholder="(555) 123-4567"
+                        required
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Email Address <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={newDriverForm.email}
+                        onChange={handleNewDriverInputChange}
+                        placeholder="john.smith@email.com"
+                        required
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        License Number <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="licenseNumber"
+                        value={newDriverForm.licenseNumber}
+                        onChange={handleNewDriverInputChange}
+                        placeholder="DL123456789"
+                        required
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Years of Experience <span className="text-red-500">*</span>
+                      </label>
+                      <select 
+                        name="experience"
+                        value={newDriverForm.experience}
+                        onChange={handleNewDriverInputChange}
+                        required
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">Select experience</option>
+                        <option value="1-2 years">1-2 years</option>
+                        <option value="3-5 years">3-5 years</option>
+                        <option value="6-10 years">6-10 years</option>
+                        <option value="10+ years">10+ years</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Location <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="location"
+                        value={newDriverForm.location}
+                        onChange={handleNewDriverInputChange}
+                        placeholder="e.g., Los Angeles, CA"
+                        required
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+                </div>
 
-            {/* Emergency Contact */}
-            <div className="col-span-full">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">🚨 Emergency Contact</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Qualifications */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Contact Name</label>
-                  <input
-                    type="text"
-                    placeholder="e.g., Jane Smith"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">🏆 Required Qualifications</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        CDL Class <span className="text-red-500">*</span>
+                      </label>
+                      <select 
+                        name="cdlClass"
+                        value={newDriverForm.cdlClass}
+                        onChange={handleNewDriverInputChange}
+                        required
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">Select CDL class</option>
+                        <option value="A">Class A</option>
+                        <option value="B">Class B</option>
+                        <option value="C">Class C</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        CDL Expiry Date <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="date"
+                        name="cdlExpiry"
+                        value={newDriverForm.cdlExpiry}
+                        onChange={handleNewDriverInputChange}
+                        required
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        DOT Medical Expiry <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="date"
+                        name="dotMedicalExpiry"
+                        value={newDriverForm.dotMedicalExpiry}
+                        onChange={handleNewDriverInputChange}
+                        required
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Additional Endorsements
+                      </label>
+                      <select 
+                        name="endorsement"
+                        value={newDriverForm.endorsement}
+                        onChange={handleNewDriverInputChange}
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">Select endorsement</option>
+                        <option value="Hazmat">Hazmat</option>
+                        <option value="Passenger">Passenger</option>
+                        <option value="School Bus">School Bus</option>
+                        <option value="Tanker">Tanker</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Relationship</label>
-                  <select className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Select relationship</option>
-                    <option value="spouse">Spouse</option>
-                    <option value="parent">Parent</option>
-                    <option value="sibling">Sibling</option>
-                    <option value="child">Child</option>
-                    <option value="friend">Friend</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Contact Phone</label>
-                  <input
-                    type="tel"
-                    placeholder="(555) 123-4567"
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-            </div>
 
-            {/* Submit Button */}
-            <div className="col-span-full">
-              <button className="w-full bg-green-600 text-white py-3 px-4 rounded-md text-sm font-medium hover:bg-green-700">
-                ✅ Hire Driver
-              </button>
+                {/* Emergency Contact */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">🚨 Emergency Contact</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Contact Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="emergencyName"
+                        value={newDriverForm.emergencyName}
+                        onChange={handleNewDriverInputChange}
+                        placeholder="e.g., Jane Smith"
+                        required
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Relationship <span className="text-red-500">*</span>
+                      </label>
+                      <select 
+                        name="emergencyRelationship"
+                        value={newDriverForm.emergencyRelationship}
+                        onChange={handleNewDriverInputChange}
+                        required
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">Select relationship</option>
+                        <option value="Spouse">Spouse</option>
+                        <option value="Parent">Parent</option>
+                        <option value="Sibling">Sibling</option>
+                        <option value="Child">Child</option>
+                        <option value="Friend">Friend</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Contact Phone <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="tel"
+                        name="emergencyPhone"
+                        value={newDriverForm.emergencyPhone}
+                        onChange={handleNewDriverInputChange}
+                        placeholder="(555) 123-4567"
+                        required
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddDriverModal(false)}
+                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                  >
+                    ✅ Hire Driver
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
-        </div>
+        )}
+
+        {/* Edit Driver Modal */}
+        {showEditDriverModal && selectedDriver && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-gray-200">
+                <h2 className="text-2xl font-bold text-gray-900">✏️ Edit Driver - {selectedDriver.name}</h2>
+              </div>
+              
+              <form onSubmit={handleSaveDriverEdit} className="p-6 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Full Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={editDriverForm.name}
+                      onChange={handleEditDriverInputChange}
+                      required
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Phone <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={editDriverForm.phone}
+                      onChange={handleEditDriverInputChange}
+                      required
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Email <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={editDriverForm.email}
+                      onChange={handleEditDriverInputChange}
+                      required
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Location <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="location"
+                      value={editDriverForm.location}
+                      onChange={handleEditDriverInputChange}
+                      required
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Status <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="status"
+                      value={editDriverForm.status}
+                      onChange={handleEditDriverInputChange}
+                      required
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="active">Active</option>
+                      <option value="on_leave">On Leave</option>
+                      <option value="inactive">Inactive</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Current Truck
+                    </label>
+                    <input
+                      type="text"
+                      name="currentTruck"
+                      value={editDriverForm.currentTruck}
+                      onChange={handleEditDriverInputChange}
+                      placeholder="TRK-001"
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                  <button
+                    type="button"
+                    onClick={() => setShowEditDriverModal(false)}
+                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* View Profile Modal */}
+        {showViewProfileModal && selectedDriver && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-purple-600">
+                <div className="flex items-center gap-4">
+                  <img
+                    src={selectedDriver.profileImage}
+                    alt={selectedDriver.name}
+                    className="w-20 h-20 rounded-full object-cover ring-4 ring-white shadow-lg"
+                  />
+                  <div className="text-white">
+                    <h2 className="text-2xl font-bold">{selectedDriver.name}</h2>
+                    <p className="text-blue-100">{selectedDriver.location}</p>
+                    <div className="flex items-center mt-1">
+                      <span className="text-yellow-300">⭐ {selectedDriver.rating}</span>
+                      <span className="text-blue-100 ml-3">({selectedDriver.totalTrips} trips)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-6 space-y-6">
+                {/* Basic Info */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">📋 Basic Information</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <p className="text-xs text-gray-500">License Number</p>
+                      <p className="font-semibold text-gray-900">{selectedDriver.licenseNumber}</p>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <p className="text-xs text-gray-500">Phone</p>
+                      <p className="font-semibold text-gray-900">{selectedDriver.phone}</p>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <p className="text-xs text-gray-500">Email</p>
+                      <p className="font-semibold text-gray-900">{selectedDriver.email}</p>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <p className="text-xs text-gray-500">Experience</p>
+                      <p className="font-semibold text-gray-900">{selectedDriver.experience}</p>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <p className="text-xs text-gray-500">Current Truck</p>
+                      <p className="font-semibold text-gray-900">{selectedDriver.currentTruck}</p>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-lg">
+                      <p className="text-xs text-gray-500">Status</p>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(selectedDriver.status)}`}>
+                        {selectedDriver.status}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Qualifications */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">🏆 Qualifications</h3>
+                  <div className="space-y-2">
+                    {selectedDriver.qualifications.map((qual: any, index: number) => (
+                      <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                        <div>
+                          <p className="font-semibold text-gray-900">{qual.type}</p>
+                          <p className="text-xs text-gray-600">
+                            Issued: {qual.issueDate} • Expires: {qual.expiryDate}
+                          </p>
+                        </div>
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getQualificationStatusColor(qual.status)}`}>
+                          {qual.status}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Emergency Contact */}
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">🚨 Emergency Contact</h3>
+                  <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+                    <p className="font-semibold text-gray-900">{selectedDriver.emergencyContact.name}</p>
+                    <p className="text-sm text-gray-600">{selectedDriver.emergencyContact.relationship}</p>
+                    <p className="text-sm text-gray-900 font-medium">{selectedDriver.emergencyContact.phone}</p>
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteDriver(selectedDriver.id, selectedDriver.name)}
+                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                  >
+                    🗑️ Remove Driver
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowViewProfileModal(false);
+                      handleEditDriver(selectedDriver);
+                    }}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    ✏️ Edit Profile
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowViewProfileModal(false)}
+                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

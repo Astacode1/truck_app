@@ -189,6 +189,123 @@ export default function IFTACalculator() {
     alert(`Trip saved successfully!\nTotal Tax: $${liveResults.totalTax.toFixed(2)}`);
   };
 
+  // Quick Actions handlers
+  const handleExportToExcel = () => {
+    // Create CSV content
+    let csvContent = "IFTA Tax Report - " + selectedQuarter + "\n\n";
+    csvContent += "State,Total Miles,Total Fuel (gal),Tax Rate ($/gal),Tax Owed ($)\n";
+    
+    sortedStates.forEach(([state, data]) => {
+      csvContent += `${state},${data.totalMiles},${data.totalFuel.toFixed(2)},${data.taxRate.toFixed(3)},${data.taxOwed.toFixed(2)}\n`;
+    });
+    
+    csvContent += `\nTOTAL,${totalMiles},${totalFuel.toFixed(2)},,${totalTaxOwed.toFixed(2)}\n`;
+    csvContent += `\nAverage MPG: ${averageMPG.toFixed(2)}\n`;
+    csvContent += `Total Trips: ${trips.length}\n`;
+    
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `IFTA_Report_${selectedQuarter}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handlePrintIFTAForm = () => {
+    // Create printable content
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>IFTA Tax Report - ${selectedQuarter}</title>
+            <style>
+              body { font-family: Arial, sans-serif; padding: 20px; }
+              h1 { color: #1f2937; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; }
+              table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+              th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+              th { background-color: #f3f4f6; font-weight: bold; }
+              .total { background-color: #dbeafe; font-weight: bold; }
+              .summary { margin: 20px 0; padding: 15px; background-color: #f9fafb; border-left: 4px solid #3b82f6; }
+              @media print {
+                .no-print { display: none; }
+              }
+            </style>
+          </head>
+          <body>
+            <h1>IFTA Tax Report - ${selectedQuarter}</h1>
+            <div class="summary">
+              <p><strong>Total Miles:</strong> ${totalMiles.toLocaleString()}</p>
+              <p><strong>Total Fuel:</strong> ${totalFuel.toFixed(2)} gallons</p>
+              <p><strong>Average MPG:</strong> ${averageMPG.toFixed(2)}</p>
+              <p><strong>Total Tax Owed:</strong> $${totalTaxOwed.toFixed(2)}</p>
+              <p><strong>Total Trips:</strong> ${trips.length}</p>
+              <p><strong>States Traveled:</strong> ${Object.keys(stateData).length}</p>
+            </div>
+            <h2>State-by-State Breakdown</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>State</th>
+                  <th>Miles</th>
+                  <th>Fuel (gal)</th>
+                  <th>Tax Rate ($/gal)</th>
+                  <th>Tax Owed ($)</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${sortedStates.map(([state, data]) => `
+                  <tr>
+                    <td>${state}</td>
+                    <td>${data.totalMiles.toLocaleString()}</td>
+                    <td>${data.totalFuel.toFixed(2)}</td>
+                    <td>$${data.taxRate.toFixed(3)}</td>
+                    <td>$${data.taxOwed.toFixed(2)}</td>
+                  </tr>
+                `).join('')}
+                <tr class="total">
+                  <td><strong>TOTAL</strong></td>
+                  <td><strong>${totalMiles.toLocaleString()}</strong></td>
+                  <td><strong>${totalFuel.toFixed(2)}</strong></td>
+                  <td></td>
+                  <td><strong>$${totalTaxOwed.toFixed(2)}</strong></td>
+                </tr>
+              </tbody>
+            </table>
+            <button class="no-print" onclick="window.print()" style="margin: 20px 0; padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer;">Print</button>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+    }
+  };
+
+  const handleAddNewTrip = () => {
+    // Reset calculator form to add new trip
+    setCalculatorInputs({
+      tripDate: new Date().toISOString().split('T')[0],
+      truckId: 'TRK-001',
+      startOdometer: 0,
+      endOdometer: 0,
+      routeDescription: '',
+      stateEntries: [
+        { state: 'GA', miles: 0, fuelGallons: 0 }
+      ]
+    });
+    
+    // Scroll to calculator section
+    const calculatorSection = document.querySelector('.bg-white.rounded-lg.shadow.p-6.mt-8');
+    if (calculatorSection) {
+      calculatorSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    alert('Ready to add a new trip! Fill in the trip details below.');
+  };
+
   // Calculate total miles and fuel by state
   const calculateStateData = (): Record<string, StateData> => {
     const stateData: Record<string, StateData> = {};
@@ -227,13 +344,13 @@ export default function IFTACalculator() {
   const sortedStates = Object.entries(stateData).sort((a, b) => b[1].taxOwed - a[1].taxOwed);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen p-6" style={{ backgroundColor: 'var(--bg-secondary)' }}>
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">IFTA Tax Calculator</h1>
-            <p className="text-gray-600 mt-1">International Fuel Tax Agreement compliance tracking</p>
+            <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>IFTA Tax Calculator</h1>
+            <p className="mt-1" style={{ color: 'var(--text-secondary)' }}>International Fuel Tax Agreement compliance tracking</p>
           </div>
           <div className="flex gap-4">
             <select
@@ -245,7 +362,11 @@ export default function IFTACalculator() {
               <option value="Q2-2024">Q2 2024</option>
               <option value="Q1-2024">Q1 2024</option>
             </select>
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-md font-medium hover:bg-blue-700">
+            <button 
+              type="button"
+              onClick={handlePrintIFTAForm}
+              className="bg-blue-600 text-white px-6 py-2 rounded-md font-medium hover:bg-blue-700"
+            >
               📊 Generate IFTA Report
             </button>
           </div>
@@ -331,12 +452,12 @@ export default function IFTACalculator() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="card">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Tax Owed</p>
+                <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Total Tax Owed</p>
                 <p className="text-2xl font-bold text-red-600">${totalTaxOwed.toFixed(2)}</p>
-                <p className="text-xs text-gray-500">{selectedQuarter}</p>
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{selectedQuarter}</p>
               </div>
               <div className="p-3 bg-red-100 rounded-full">
                 <span className="text-2xl">💰</span>
@@ -344,12 +465,12 @@ export default function IFTACalculator() {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="card">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Miles</p>
+                <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Total Miles</p>
                 <p className="text-2xl font-bold text-blue-600">{totalMiles.toLocaleString()}</p>
-                <p className="text-xs text-gray-500">All States</p>
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>All States</p>
               </div>
               <div className="p-3 bg-blue-100 rounded-full">
                 <span className="text-2xl">🛣️</span>
@@ -475,18 +596,31 @@ export default function IFTACalculator() {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">⚡ Quick Actions</h3>
               <div className="space-y-3">
                 <button 
+                  type="button"
                   onClick={() => setShowTripDetails(!showTripDetails)}
                   className="w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700"
                 >
                   {showTripDetails ? 'Hide' : 'Show'} Trip Details
                 </button>
-                <button className="w-full bg-green-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-green-700">
+                <button 
+                  type="button"
+                  onClick={handleExportToExcel}
+                  className="w-full bg-green-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-green-700"
+                >
                   Export to Excel
                 </button>
-                <button className="w-full bg-purple-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-purple-700">
+                <button 
+                  type="button"
+                  onClick={handlePrintIFTAForm}
+                  className="w-full bg-purple-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-purple-700"
+                >
                   Print IFTA Form
                 </button>
-                <button className="w-full bg-yellow-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-yellow-700">
+                <button 
+                  type="button"
+                  onClick={handleAddNewTrip}
+                  className="w-full bg-yellow-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-yellow-700"
+                >
                   Add New Trip
                 </button>
               </div>
@@ -610,6 +744,7 @@ export default function IFTACalculator() {
                         ${(stateTaxRates[entry.state] || 0).toFixed(3)}
                       </span>
                       <button
+                        type="button"
                         onClick={() => removeStateEntry(index)}
                         className="text-red-600 hover:text-red-800 text-sm font-medium"
                         disabled={calculatorInputs.stateEntries.length <= 1}
@@ -620,6 +755,7 @@ export default function IFTACalculator() {
                   ))}
                   
                   <button 
+                    type="button"
                     onClick={addStateEntry}
                     className="w-full bg-green-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-green-700 mt-3"
                   >
@@ -715,6 +851,7 @@ export default function IFTACalculator() {
               {/* Action Buttons */}
               <div className="space-y-3">
                 <button 
+                  type="button"
                   onClick={() => {
                     if (liveResults.totalTax > 0) {
                       alert(`IFTA Tax Calculation Complete!\n\nTotal Miles: ${liveResults.totalMiles.toLocaleString()}\nTotal Fuel: ${liveResults.totalFuel.toLocaleString()} gallons\nAverage MPG: ${liveResults.avgMPG.toFixed(1)}\n\nTotal IFTA Tax Owed: $${liveResults.totalTax.toFixed(2)}`);
@@ -727,6 +864,7 @@ export default function IFTACalculator() {
                   🧮 Calculate IFTA Tax
                 </button>
                 <button 
+                  type="button"
                   onClick={saveTrip}
                   disabled={liveResults.totalMiles === 0}
                   className="w-full bg-green-600 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
@@ -734,6 +872,7 @@ export default function IFTACalculator() {
                   💾 Save Trip Data
                 </button>
                 <button 
+                  type="button"
                   onClick={() => {
                     const reportData = `IFTA Tax Report\n=================\nTrip Date: ${calculatorInputs.tripDate}\nTruck: ${calculatorInputs.truckId}\nRoute: ${calculatorInputs.routeDescription}\n\nState Breakdown:\n${calculatorInputs.stateEntries.map(entry => {
                       const tax = entry.fuelGallons * (stateTaxRates[entry.state] || 0);

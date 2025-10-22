@@ -287,13 +287,13 @@ Generated on: ${new Date().toLocaleDateString()}
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen p-6" style={{ backgroundColor: 'var(--bg-secondary)' }}>
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">IFTA Form Generator</h1>
-            <p className="text-gray-600 mt-1">Generate detailed quarterly fuel tax returns</p>
+            <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>IFTA Form Generator</h1>
+            <p className="mt-1" style={{ color: 'var(--text-secondary)' }}>Generate detailed quarterly fuel tax returns</p>
           </div>
           <div className="flex gap-4">
             <button
