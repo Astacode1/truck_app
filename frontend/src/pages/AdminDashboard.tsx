@@ -164,17 +164,35 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-        <p className="mt-2 text-gray-600">
-          Financial overview and fleet management insights for {currentMonth}
-        </p>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)' }}>
+      {/* Professional Header */}
+      <div style={{ 
+        background: 'rgba(15, 23, 42, 0.8)', 
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(34, 211, 238, 0.1)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+      }} className="mb-8">
+        <div className="px-8 py-6">
+          <div className="flex items-center gap-3 mb-2">
+            <h1 className="text-3xl font-bold text-white tracking-tight">Admin Dashboard</h1>
+            <span className="text-xs font-bold px-3 py-1 rounded-full" style={{
+              background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(129, 140, 248, 0.2) 100%)',
+              border: '1px solid rgba(34, 211, 238, 0.3)',
+              color: '#22d3ee',
+              letterSpacing: '0.15em'
+            }}>
+              ATONDA
+            </span>
+          </div>
+          <p className="text-sm" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>
+            Financial overview and fleet management insights for {currentMonth}
+          </p>
+        </div>
       </div>
 
-      {/* Overview Stats */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="px-8 pb-8 space-y-6">
+        {/* Overview Stats - Holographic */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Monthly Expenses"
           value={formatCurrency(overview?.overview.thisMonth.totalAmount || 0)}
@@ -383,6 +401,7 @@ const AdminDashboard = () => {
             <p className="text-sm text-gray-600">Monthly Average</p>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

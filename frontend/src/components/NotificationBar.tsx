@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Bell, Clock, AlertTriangle, FileText, Truck, Calendar, X } from 'lucide-react';
+import NotificationsIcon from '@mui/icons-material/Notifications'
+import AccessTimeIcon from '@mui/icons-material/AccessTime'
+import WarningIcon from '@mui/icons-material/Warning'
+import DescriptionIcon from '@mui/icons-material/Description'
+import LocalShippingIcon from '@mui/icons-material/LocalShipping'
+import EventIcon from '@mui/icons-material/Event'
+import CloseIcon from '@mui/icons-material/Close'
 import NotificationService, { NotificationData } from '../services/NotificationService';
 
 export default function NotificationBar() {
@@ -35,19 +41,19 @@ export default function NotificationBar() {
   const getIcon = (type: NotificationData['type']) => {
     switch (type) {
       case 'license':
-        return <FileText size={16} />;
+        return <DescriptionIcon sx={{ fontSize: 16 }} />;
       case 'order':
-        return <Calendar size={16} />;
+        return <EventIcon sx={{ fontSize: 16 }} />;
       case 'inspection':
-        return <Truck size={16} />;
+        return <LocalShippingIcon sx={{ fontSize: 16 }} />;
       case 'insurance':
-        return <FileText size={16} />;
+        return <DescriptionIcon sx={{ fontSize: 16 }} />;
       case 'permit':
-        return <FileText size={16} />;
+        return <DescriptionIcon sx={{ fontSize: 16 }} />;
       case 'maintenance':
-        return <Clock size={16} />;
+        return <AccessTimeIcon sx={{ fontSize: 16 }} />;
       default:
-        return <Bell size={16} />;
+        return <NotificationsIcon sx={{ fontSize: 16 }} />;
     }
   };
 
@@ -80,94 +86,134 @@ export default function NotificationBar() {
 
   return (
     <div className="notification-bar">
-      {/* Compact notification bar */}
+      {/* Compact notification bar - HOLOGRAPHIC DESIGN */}
       <div 
-        className="flex items-center justify-between px-4 py-3 cursor-pointer transition-all duration-300"
+        className="flex items-center justify-between px-6 py-4 cursor-pointer transition-all duration-300 hover:shadow-lg"
         style={{ 
-          backgroundColor: 'var(--card-bg)', 
-          borderBottom: '1px solid var(--border-color)',
-          backdropFilter: 'blur(16px)'
+          background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.95) 100%)',
+          borderBottom: '1px solid rgba(34, 211, 238, 0.2)',
+          backdropFilter: 'blur(20px)',
+          boxShadow: urgentNotifications.length > 0 
+            ? '0 4px 20px rgba(239, 68, 68, 0.2)' 
+            : '0 2px 10px rgba(0, 0, 0, 0.1)'
         }}
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-4">
           <div className="relative">
-            <Bell size={20} style={{ color: 'var(--text-primary)' }} />
+            <div className="p-2 rounded-xl" style={{
+              background: urgentNotifications.length > 0 
+                ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%)'
+                : 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(129, 140, 248, 0.2) 100%)',
+              border: urgentNotifications.length > 0
+                ? '1px solid rgba(239, 68, 68, 0.3)'
+                : '1px solid rgba(34, 211, 238, 0.3)'
+            }}>
+              <NotificationsIcon sx={{ 
+                fontSize: 20, 
+                color: urgentNotifications.length > 0 ? '#ef4444' : '#22d3ee'
+              }} />
+            </div>
             {urgentNotifications.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold animate-pulse" style={{
+                background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                boxShadow: '0 0 15px rgba(239, 68, 68, 0.6)'
+              }}>
                 {urgentNotifications.length}
               </span>
             )}
           </div>
           
           <div>
-            <span className="font-medium text-sm" style={{ color: 'var(--text-primary)' }}>
+            <span className="font-bold text-sm text-white">
               {urgentNotifications.length > 0 
                 ? `${urgentNotifications.length} urgent alert${urgentNotifications.length > 1 ? 's' : ''}`
                 : `${notifications.length} notification${notifications.length > 1 ? 's' : ''}`
               }
             </span>
             {urgentNotifications.length > 0 && (
-              <span className="ml-2 text-xs" style={{ color: 'var(--text-muted)' }}>
+              <span className="ml-2 text-xs" style={{ color: 'rgba(148, 163, 184, 0.9)' }}>
                 - {urgentNotifications[0].title}
               </span>
             )}
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-3">
           {urgentNotifications.length > 0 && (
-            <span className="flex items-center text-red-500 text-xs">
-              <AlertTriangle size={14} className="mr-1" />
+            <span className="flex items-center text-xs font-semibold px-3 py-1 rounded-full" style={{
+              background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              color: '#fca5a5'
+            }}>
+              <WarningIcon sx={{ fontSize: 14, marginRight: '4px' }} />
               Urgent
             </span>
           )}
-          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            {isExpanded ? 'Click to collapse' : 'Click to expand'}
+          <span className="text-xs" style={{ color: 'rgba(148, 163, 184, 0.7)' }}>
+            {isExpanded ? '▲ Collapse' : '▼ Expand'}
           </span>
         </div>
       </div>
 
-      {/* Expanded notification panel */}
+      {/* Expanded notification panel - HOLOGRAPHIC GLASSMORPHISM */}
       {isExpanded && (
         <div 
           className="border-t"
           style={{ 
-            backgroundColor: 'var(--bg-secondary)', 
-            borderColor: 'var(--border-color)'
+            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%)',
+            borderColor: 'rgba(34, 211, 238, 0.2)',
+            backdropFilter: 'blur(20px)'
           }}
         >
           <div className="max-h-96 overflow-y-auto">
             {/* Urgent notifications */}
             {urgentNotifications.length > 0 && (
-              <div className="p-4">
-                <h3 className="text-sm font-semibold mb-3 flex items-center" style={{ color: 'var(--text-primary)' }}>
-                  <AlertTriangle size={16} className="text-red-500 mr-2" />
-                  Urgent (Expires within 7 days)
+              <div className="p-6">
+                <h3 className="text-sm font-black mb-4 flex items-center" style={{
+                  background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>
+                  <WarningIcon sx={{ fontSize: 18, color: '#ef4444', marginRight: '8px' }} />
+                  URGENT - EXPIRES WITHIN 7 DAYS
                 </h3>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {urgentNotifications.map((notification) => (
                     <div
                       key={notification.id}
-                      className={`p-3 rounded-lg border transition-all duration-200 ${getPriorityBg(notification.priority, notification.daysUntilExpiry)}`}
+                      className="p-4 rounded-xl border transition-all duration-300 hover:shadow-lg"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.1) 100%)',
+                        border: '1px solid rgba(239, 68, 68, 0.3)',
+                        backdropFilter: 'blur(10px)'
+                      }}
                     >
                       <div className="flex items-start justify-between">
-                        <div className="flex items-start space-x-3">
-                          <div className={getPriorityColor(notification.priority, notification.daysUntilExpiry)}>
-                            {getIcon(notification.type)}
+                        <div className="flex items-start space-x-3 flex-1">
+                          <div className="p-2 rounded-lg" style={{
+                            background: 'rgba(239, 68, 68, 0.2)',
+                            border: '1px solid rgba(239, 68, 68, 0.3)'
+                          }}>
+                            <div style={{ color: '#fca5a5' }}>
+                              {getIcon(notification.type)}
+                            </div>
                           </div>
                           <div className="flex-1">
-                            <h4 className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                            <h4 className="text-sm font-bold text-white mb-1">
                               {notification.title}
                             </h4>
-                            <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
+                            <p className="text-xs mb-2" style={{ color: 'rgba(203, 213, 225, 0.9)' }}>
                               {notification.message}
                             </p>
-                            <div className="flex items-center mt-2 space-x-4">
-                              <span className={`text-xs font-medium ${getPriorityColor(notification.priority, notification.daysUntilExpiry)}`}>
-                                {notification.daysUntilExpiry} days remaining
+                            <div className="flex items-center gap-4">
+                              <span className="text-xs font-bold px-2 py-1 rounded" style={{
+                                background: 'rgba(239, 68, 68, 0.2)',
+                                color: '#fca5a5'
+                              }}>
+                                ⚠️ {notification.daysUntilExpiry} days left
                               </span>
-                              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                              <span className="text-xs" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>
                                 Due: {new Date(notification.expiryDate).toLocaleDateString()}
                               </span>
                             </div>
@@ -178,10 +224,20 @@ export default function NotificationBar() {
                             e.stopPropagation();
                             dismissNotification(notification.id);
                           }}
-                          className="p-1 hover:bg-red-100 rounded transition-colors"
+                          className="p-1.5 rounded-lg transition-all duration-200"
+                          style={{
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            border: '1px solid rgba(239, 68, 68, 0.2)'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)'
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'
+                          }}
                           title="Dismiss notification"
                         >
-                          <X size={14} style={{ color: 'var(--text-muted)' }} />
+                          <CloseIcon sx={{ fontSize: 14, color: '#fca5a5' }} />
                         </button>
                       </div>
                     </div>
@@ -192,34 +248,63 @@ export default function NotificationBar() {
 
             {/* Upcoming notifications */}
             {upcomingNotifications.length > 0 && (
-              <div className="p-4 border-t" style={{ borderColor: 'var(--border-color)' }}>
-                <h3 className="text-sm font-semibold mb-3 flex items-center" style={{ color: 'var(--text-primary)' }}>
-                  <Clock size={16} className="text-yellow-500 mr-2" />
-                  Upcoming (Next 30 days)
+              <div className="p-6 border-t" style={{ borderColor: 'rgba(34, 211, 238, 0.2)' }}>
+                <h3 className="text-sm font-black mb-4 flex items-center" style={{
+                  background: 'linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>
+                  <AccessTimeIcon sx={{ fontSize: 18, color: '#22d3ee', marginRight: '8px' }} />
+                  UPCOMING - NEXT 30 DAYS
                 </h3>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {upcomingNotifications.slice(0, 5).map((notification) => (
                     <div
                       key={notification.id}
-                      className={`p-3 rounded-lg border transition-all duration-200 ${getPriorityBg(notification.priority, notification.daysUntilExpiry)}`}
+                      className="p-4 rounded-xl border transition-all duration-300 hover:shadow-lg"
+                      style={{
+                        background: notification.daysUntilExpiry <= 14
+                          ? 'linear-gradient(135deg, rgba(251, 146, 60, 0.15) 0%, rgba(249, 115, 22, 0.1) 100%)'
+                          : 'linear-gradient(135deg, rgba(34, 211, 238, 0.15) 0%, rgba(129, 140, 248, 0.1) 100%)',
+                        border: notification.daysUntilExpiry <= 14
+                          ? '1px solid rgba(251, 146, 60, 0.3)'
+                          : '1px solid rgba(34, 211, 238, 0.3)',
+                        backdropFilter: 'blur(10px)'
+                      }}
                     >
                       <div className="flex items-start justify-between">
-                        <div className="flex items-start space-x-3">
-                          <div className={getPriorityColor(notification.priority, notification.daysUntilExpiry)}>
-                            {getIcon(notification.type)}
+                        <div className="flex items-start space-x-3 flex-1">
+                          <div className="p-2 rounded-lg" style={{
+                            background: notification.daysUntilExpiry <= 14
+                              ? 'rgba(251, 146, 60, 0.2)'
+                              : 'rgba(34, 211, 238, 0.2)',
+                            border: notification.daysUntilExpiry <= 14
+                              ? '1px solid rgba(251, 146, 60, 0.3)'
+                              : '1px solid rgba(34, 211, 238, 0.3)'
+                          }}>
+                            <div style={{ 
+                              color: notification.daysUntilExpiry <= 14 ? '#fdba74' : '#67e8f9'
+                            }}>
+                              {getIcon(notification.type)}
+                            </div>
                           </div>
                           <div className="flex-1">
-                            <h4 className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                            <h4 className="text-sm font-bold text-white mb-1">
                               {notification.title}
                             </h4>
-                            <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
+                            <p className="text-xs mb-2" style={{ color: 'rgba(203, 213, 225, 0.9)' }}>
                               {notification.message}
                             </p>
-                            <div className="flex items-center mt-2 space-x-4">
-                              <span className={`text-xs font-medium ${getPriorityColor(notification.priority, notification.daysUntilExpiry)}`}>
-                                {notification.daysUntilExpiry} days remaining
+                            <div className="flex items-center gap-4">
+                              <span className="text-xs font-bold px-2 py-1 rounded" style={{
+                                background: notification.daysUntilExpiry <= 14
+                                  ? 'rgba(251, 146, 60, 0.2)'
+                                  : 'rgba(34, 211, 238, 0.2)',
+                                color: notification.daysUntilExpiry <= 14 ? '#fdba74' : '#67e8f9'
+                              }}>
+                                {notification.daysUntilExpiry} days left
                               </span>
-                              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                              <span className="text-xs" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>
                                 Due: {new Date(notification.expiryDate).toLocaleDateString()}
                               </span>
                             </div>
@@ -230,10 +315,20 @@ export default function NotificationBar() {
                             e.stopPropagation();
                             dismissNotification(notification.id);
                           }}
-                          className="p-1 hover:bg-gray-100 rounded transition-colors"
+                          className="p-1.5 rounded-lg transition-all duration-200"
+                          style={{
+                            background: 'rgba(148, 163, 184, 0.1)',
+                            border: '1px solid rgba(148, 163, 184, 0.2)'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(148, 163, 184, 0.2)'
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(148, 163, 184, 0.1)'
+                          }}
                           title="Dismiss notification"
                         >
-                          <X size={14} style={{ color: 'var(--text-muted)' }} />
+                          <CloseIcon sx={{ fontSize: 14, color: 'rgba(148, 163, 184, 0.8)' }} />
                         </button>
                       </div>
                     </div>
@@ -241,8 +336,12 @@ export default function NotificationBar() {
                 </div>
                 
                 {upcomingNotifications.length > 5 && (
-                  <div className="mt-3 text-center">
-                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                  <div className="mt-4 text-center">
+                    <span className="text-xs font-semibold px-4 py-2 rounded-full inline-block" style={{
+                      background: 'rgba(34, 211, 238, 0.1)',
+                      border: '1px solid rgba(34, 211, 238, 0.2)',
+                      color: '#67e8f9'
+                    }}>
                       +{upcomingNotifications.length - 5} more notifications
                     </span>
                   </div>
@@ -250,26 +349,48 @@ export default function NotificationBar() {
               </div>
             )}
 
-            {/* Summary footer */}
+            {/* Summary footer - HOLOGRAPHIC STATS */}
             <div 
-              className="p-4 border-t text-center"
+              className="p-6 border-t text-center"
               style={{ 
-                backgroundColor: 'var(--card-bg)', 
-                borderColor: 'var(--border-color)' 
+                background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.95) 100%)',
+                borderColor: 'rgba(34, 211, 238, 0.2)',
+                backdropFilter: 'blur(20px)'
               }}
             >
-              <div className="grid grid-cols-3 gap-4 text-xs">
-                <div>
-                  <span className="font-medium text-red-500">{urgentNotifications.length}</span>
-                  <span className="block" style={{ color: 'var(--text-muted)' }}>Urgent</span>
+              <div className="grid grid-cols-3 gap-6 text-xs">
+                <div className="p-3 rounded-xl" style={{
+                  background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.1) 100%)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)'
+                }}>
+                  <span className="font-black text-2xl block mb-1" style={{
+                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}>{urgentNotifications.length}</span>
+                  <span className="block font-semibold" style={{ color: '#fca5a5' }}>Urgent</span>
                 </div>
-                <div>
-                  <span className="font-medium text-yellow-500">{upcomingNotifications.length}</span>
-                  <span className="block" style={{ color: 'var(--text-muted)' }}>Upcoming</span>
+                <div className="p-3 rounded-xl" style={{
+                  background: 'linear-gradient(135deg, rgba(251, 146, 60, 0.15) 0%, rgba(249, 115, 22, 0.1) 100%)',
+                  border: '1px solid rgba(251, 146, 60, 0.3)'
+                }}>
+                  <span className="font-black text-2xl block mb-1" style={{
+                    background: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}>{upcomingNotifications.length}</span>
+                  <span className="block font-semibold" style={{ color: '#fdba74' }}>Upcoming</span>
                 </div>
-                <div>
-                  <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{notifications.length}</span>
-                  <span className="block" style={{ color: 'var(--text-muted)' }}>Total</span>
+                <div className="p-3 rounded-xl" style={{
+                  background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.15) 0%, rgba(129, 140, 248, 0.1) 100%)',
+                  border: '1px solid rgba(34, 211, 238, 0.3)'
+                }}>
+                  <span className="font-black text-2xl block mb-1" style={{
+                    background: 'linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}>{notifications.length}</span>
+                  <span className="block font-semibold" style={{ color: '#67e8f9' }}>Total</span>
                 </div>
               </div>
             </div>

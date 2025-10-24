@@ -287,40 +287,72 @@ Generated on: ${new Date().toLocaleDateString()}
   };
 
   return (
-    <div className="min-h-screen p-6" style={{ backgroundColor: 'var(--bg-secondary)' }}>
-      <div className="mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>IFTA Form Generator</h1>
-            <p className="mt-1" style={{ color: 'var(--text-secondary)' }}>Generate detailed quarterly fuel tax returns</p>
-          </div>
-          <div className="flex gap-4">
-            <button
-              onClick={() => setShowPreview(!showPreview)}
-              className="bg-blue-600 text-white px-6 py-2 rounded-md font-medium hover:bg-blue-700"
-            >
-              {showPreview ? 'Hide Preview' : 'Show Preview'}
-            </button>
-            <button
-              onClick={() => {
-                const report = generateReport();
-                navigator.clipboard.writeText(report).then(() => {
-                  alert('IFTA report copied to clipboard!');
-                }).catch(() => {
-                  alert('Report generated:\n\n' + report);
-                });
-              }}
-              className="bg-green-600 text-white px-6 py-2 rounded-md font-medium hover:bg-green-700"
-            >
-              📄 Generate Report
-            </button>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)' }}>
+      {/* Professional Header */}
+      <div style={{ 
+        background: 'rgba(15, 23, 42, 0.8)', 
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(34, 211, 238, 0.1)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+      }} className="mb-8">
+        <div className="px-8 py-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-3xl font-bold text-white tracking-tight">IFTA Form Generator</h1>
+                <span className="text-xs font-bold px-3 py-1 rounded-full" style={{
+                  background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(129, 140, 248, 0.2) 100%)',
+                  border: '1px solid rgba(34, 211, 238, 0.3)',
+                  color: '#22d3ee',
+                  letterSpacing: '0.15em'
+                }}>
+                  ATONDA
+                </span>
+              </div>
+              <p className="text-sm" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>Generate detailed quarterly fuel tax returns</p>
+            </div>
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowPreview(!showPreview)}
+                style={{
+                  background: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)',
+                  boxShadow: '0 4px 15px rgba(34, 211, 238, 0.4)'
+                }}
+                className="px-6 py-3 rounded-xl text-white font-semibold hover:scale-105 transition-transform"
+              >
+                {showPreview ? 'Hide Preview' : 'Show Preview'}
+              </button>
+              <button
+                onClick={() => {
+                  const report = generateReport();
+                  navigator.clipboard.writeText(report).then(() => {
+                    alert('IFTA report copied to clipboard!');
+                  }).catch(() => {
+                    alert('Report generated:\n\n' + report);
+                  });
+                }}
+                style={{
+                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                  boxShadow: '0 4px 15px rgba(16, 185, 129, 0.4)'
+                }}
+                className="px-6 py-3 rounded-xl text-white font-semibold hover:scale-105 transition-transform"
+              >
+                📄 Generate Report
+              </button>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Form Tabs */}
-        <div className="bg-white rounded-lg shadow mb-8">
-          <div className="border-b border-gray-200">
+      <div className="px-8 pb-8">
+        {/* Form Tabs - Holographic */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(34, 211, 238, 0.2)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+        }} className="rounded-2xl mb-8">
+          <div style={{ borderBottom: '1px solid rgba(34, 211, 238, 0.2)' }}>
             <nav className="flex space-x-8 px-6">
               {[
                 { id: 'company', label: 'Company Info' },

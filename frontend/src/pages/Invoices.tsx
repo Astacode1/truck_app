@@ -621,76 +621,124 @@ export default function Invoices() {
   const pendingInvoices = invoices.filter(inv => inv.status === 'pending_review').length;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="mx-auto max-w-7xl">
-        {/* Notification */}
-        {notification && (
-          <div className={`fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg ${
-            notification.type === 'success' ? 'bg-green-600' : 'bg-red-600'
-          } text-white animate-fade-in`}>
-            {notification.message}
-          </div>
-        )}
-
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Invoice Management</h1>
-            <p className="text-gray-600 mt-1">Submit, track, and manage your factoring invoices</p>
-          </div>
-          <button 
-            onClick={() => setShowCreateModal(true)}
-            className="bg-blue-600 text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 flex items-center gap-2"
-          >
-            📄 Submit New Invoice
-          </button>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)' }}>
+      {/* Notification */}
+      {notification && (
+        <div style={{
+          background: notification.type === 'success' 
+            ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.95) 0%, rgba(5, 150, 105, 0.95) 100%)'
+            : 'linear-gradient(135deg, rgba(251, 146, 60, 0.95) 0%, rgba(249, 115, 22, 0.95) 100%)',
+          backdropFilter: 'blur(20px)',
+          border: `1px solid ${notification.type === 'success' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(251, 146, 60, 0.3)'}`,
+          boxShadow: `0 8px 32px ${notification.type === 'success' ? 'rgba(16, 185, 129, 0.4)' : 'rgba(251, 146, 60, 0.4)'}`
+        }} className="fixed top-4 right-4 z-50 px-6 py-3 rounded-xl text-white font-semibold shadow-lg animate-fade-in">
+          {notification.message}
         </div>
+      )}
 
-        {/* Dashboard Cards */}
+      {/* Professional Header */}
+      <div style={{ 
+        background: 'rgba(15, 23, 42, 0.8)', 
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(34, 211, 238, 0.1)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+      }} className="mb-8">
+        <div className="px-8 py-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-3xl font-bold text-white tracking-tight">Invoice Management</h1>
+                <span className="text-xs font-bold px-3 py-1 rounded-full" style={{
+                  background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(129, 140, 248, 0.2) 100%)',
+                  border: '1px solid rgba(34, 211, 238, 0.3)',
+                  color: '#22d3ee',
+                  letterSpacing: '0.15em'
+                }}>
+                  ATONDA
+                </span>
+              </div>
+              <p className="text-sm" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>Submit, track, and manage your factoring invoices</p>
+            </div>
+            <button 
+              onClick={() => setShowCreateModal(true)}
+              style={{
+                background: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)',
+                boxShadow: '0 4px 15px rgba(34, 211, 238, 0.4)'
+              }}
+              className="px-6 py-3 rounded-xl text-white font-semibold flex items-center gap-2 hover:scale-105 transition-transform"
+            >
+              📄 Submit New Invoice
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-8 pb-8">
+        {/* Dashboard Cards - Holographic */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(34, 211, 238, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(34, 211, 238, 0.3)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+          }} className="p-6 rounded-2xl">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Invoice Value</p>
-                <p className="text-2xl font-bold text-gray-900">${totalInvoiceAmount.toLocaleString()}</p>
+                <p className="text-sm font-semibold mb-2" style={{ color: '#22d3ee' }}>Total Invoice Value</p>
+                <p className="text-3xl font-bold text-white">${totalInvoiceAmount.toLocaleString()}</p>
               </div>
-              <div className="p-3 bg-blue-100 rounded-full">
+              <div className="p-3 rounded-full" style={{ background: 'rgba(34, 211, 238, 0.2)' }}>
                 <span className="text-2xl">💰</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(16, 185, 129, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(16, 185, 129, 0.3)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+          }} className="p-6 rounded-2xl">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Advanced Amount</p>
-                <p className="text-2xl font-bold text-green-600">${totalAdvanced.toLocaleString()}</p>
+                <p className="text-sm font-semibold mb-2" style={{ color: '#10b981' }}>Advanced Amount</p>
+                <p className="text-3xl font-bold" style={{ color: '#10b981' }}>${totalAdvanced.toLocaleString()}</p>
               </div>
-              <div className="p-3 bg-green-100 rounded-full">
+              <div className="p-3 rounded-full" style={{ background: 'rgba(16, 185, 129, 0.2)' }}>
                 <span className="text-2xl">💸</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(251, 146, 60, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(251, 146, 60, 0.3)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+          }} className="p-6 rounded-2xl">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Fees</p>
-                <p className="text-2xl font-bold text-red-600">${totalFees.toLocaleString()}</p>
+                <p className="text-sm font-semibold mb-2" style={{ color: '#fb923c' }}>Total Fees</p>
+                <p className="text-3xl font-bold" style={{ color: '#fb923c' }}>${totalFees.toLocaleString()}</p>
               </div>
-              <div className="p-3 bg-red-100 rounded-full">
+              <div className="p-3 rounded-full" style={{ background: 'rgba(251, 146, 60, 0.2)' }}>
                 <span className="text-2xl">📊</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(129, 140, 248, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(129, 140, 248, 0.3)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+          }} className="p-6 rounded-2xl">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Pending Review</p>
-                <p className="text-2xl font-bold text-yellow-600">{pendingInvoices}</p>
+                <p className="text-sm font-semibold mb-2" style={{ color: '#818cf8' }}>Pending Review</p>
+                <p className="text-3xl font-bold" style={{ color: '#818cf8' }}>{pendingInvoices}</p>
               </div>
-              <div className="p-3 bg-yellow-100 rounded-full">
+              <div className="p-3 rounded-full" style={{ background: 'rgba(129, 140, 248, 0.2)' }}>
                 <span className="text-2xl">⏳</span>
               </div>
             </div>
@@ -700,7 +748,12 @@ export default function Invoices() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Invoice List */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow">
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(34, 211, 238, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+            }} className="rounded-2xl">
               <div className="p-6 border-b border-gray-200">
                 <div className="flex justify-between items-center">
                   <h2 className="text-xl font-semibold text-gray-900">Invoice List</h2>

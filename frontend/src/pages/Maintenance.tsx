@@ -342,86 +342,175 @@ export default function Maintenance() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">{t('maintenance.title')}</h1>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
-            📊 {t('maintenance.generateReport')}
-          </button>
-        </div>
-
-        {/* Fleet Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('maintenance.totalFleet')}</h3>
-            <p className="text-3xl font-bold text-blue-600">{trucks.length}</p>
-            <p className="text-sm text-gray-600">{t('maintenance.activeTrucks')}</p>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)' }}>
+      {/* Professional Header */}
+      <div style={{ 
+        background: 'rgba(15, 23, 42, 0.8)', 
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(34, 211, 238, 0.1)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+      }} className="mb-8">
+        <div className="px-8 py-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-3xl font-bold text-white tracking-tight">{t('maintenance.title')}</h1>
+                <span className="text-xs font-bold px-3 py-1 rounded-full" style={{
+                  background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(129, 140, 248, 0.2) 100%)',
+                  border: '1px solid rgba(34, 211, 238, 0.3)',
+                  color: '#22d3ee',
+                  letterSpacing: '0.15em'
+                }}>
+                  ATONDA
+                </span>
+              </div>
+              <p className="text-sm" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>Manage vehicle maintenance and expenses</p>
+            </div>
+            <button 
+              style={{
+                background: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)',
+                boxShadow: '0 4px 15px rgba(34, 211, 238, 0.4)'
+              }}
+              className="px-6 py-3 rounded-xl text-white font-semibold flex items-center gap-2 hover:scale-105 transition-transform"
+            >
+              📊 {t('maintenance.generateReport')}
+            </button>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('maintenance.monthlyExpenses')}</h3>
-            <p className="text-3xl font-bold text-red-600">
+        </div>
+      </div>
+
+      <div className="px-8 pb-8">
+        {/* Fleet Overview - Holographic Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(34, 211, 238, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(34, 211, 238, 0.3)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+          }} className="p-6 rounded-2xl">
+            <h3 className="text-sm font-semibold mb-3" style={{ color: '#22d3ee' }}>{t('maintenance.totalFleet')}</h3>
+            <p className="text-4xl font-bold mb-2" style={{
+              background: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>{trucks.length}</p>
+            <p className="text-xs" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>{t('maintenance.activeTrucks')}</p>
+          </div>
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(251, 146, 60, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(251, 146, 60, 0.3)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+          }} className="p-6 rounded-2xl">
+            <h3 className="text-sm font-semibold mb-3" style={{ color: '#fb923c' }}>{t('maintenance.monthlyExpenses')}</h3>
+            <p className="text-4xl font-bold mb-2" style={{
+              background: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>
               ${trucks.reduce((total, truck) => total + calculateTotalExpenses(truck), 0).toLocaleString()}
             </p>
-            <p className="text-sm text-gray-600">{t('maintenance.allCategories')}</p>
+            <p className="text-xs" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>{t('maintenance.allCategories')}</p>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('maintenance.avgPerTruck')}</h3>
-            <p className="text-3xl font-bold text-purple-600">
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(129, 140, 248, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(129, 140, 248, 0.3)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+          }} className="p-6 rounded-2xl">
+            <h3 className="text-sm font-semibold mb-3" style={{ color: '#818cf8' }}>{t('maintenance.avgPerTruck')}</h3>
+            <p className="text-4xl font-bold mb-2" style={{
+              background: 'linear-gradient(135deg, #818cf8 0%, #6366f1 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>
               ${Math.round(trucks.reduce((total, truck) => total + calculateTotalExpenses(truck), 0) / trucks.length).toLocaleString()}
             </p>
-            <p className="text-sm text-gray-600">{t('maintenance.monthlyAverage')}</p>
+            <p className="text-xs" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>{t('maintenance.monthlyAverage')}</p>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('maintenance.inMaintenance')}</h3>
-            <p className="text-3xl font-bold text-yellow-600">
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(16, 185, 129, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(16, 185, 129, 0.3)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+          }} className="p-6 rounded-2xl">
+            <h3 className="text-sm font-semibold mb-3" style={{ color: '#10b981' }}>{t('maintenance.inMaintenance')}</h3>
+            <p className="text-4xl font-bold mb-2" style={{
+              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>
               {trucks.filter(truck => truck.status === 'maintenance').length}
             </p>
-            <p className="text-sm text-gray-600">{t('maintenance.currently')}</p>
+            <p className="text-xs" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>{t('maintenance.currently')}</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Truck Selection */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">🚛 {t('maintenance.selectTruck')}</h2>
-              <div className="space-y-4">
-                {trucks.map((truck) => (
-                  <div
-                    key={truck.id}
-                    onClick={() => setSelectedTruck(truck)}
-                    className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
-                      selectedTruck.id === truck.id
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className="flex justify-between items-center mb-2">
-                      <h3 className="font-semibold text-gray-900">{truck.id}</h3>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(truck.status)}`}>
-                        {truck.status === 'active' ? t('maintenance.active').toUpperCase() : 
-                         truck.status === 'maintenance' ? t('maintenance.maintenanceStatus').toUpperCase() :
-                         truck.status === 'inactive' ? t('maintenance.inactive').toUpperCase() : 
-                         truck.status.replace('_', ' ').toUpperCase()}
-                      </span>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Truck Selection - Glassy Sidebar */}
+            <div className="lg:col-span-1">
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(34, 211, 238, 0.2)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+              }} className="rounded-2xl p-6">
+                <h2 className="text-xl font-semibold mb-4" style={{ color: '#22d3ee' }}>🚛 {t('maintenance.selectTruck')}</h2>
+                <div className="space-y-4">
+                  {trucks.map((truck) => (
+                    <div
+                      key={truck.id}
+                      onClick={() => setSelectedTruck(truck)}
+                      style={{
+                        background: selectedTruck.id === truck.id 
+                          ? 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(129, 140, 248, 0.1) 100%)'
+                          : 'rgba(15, 23, 42, 0.6)',
+                        border: selectedTruck.id === truck.id 
+                          ? '2px solid rgba(34, 211, 238, 0.5)'
+                          : '1px solid rgba(148, 163, 184, 0.2)',
+                        boxShadow: selectedTruck.id === truck.id
+                          ? '0 4px 20px rgba(34, 211, 238, 0.3)'
+                          : 'none'
+                      }}
+                      className="p-4 rounded-xl cursor-pointer transition-all duration-200 hover:border-primary hover:bg-opacity-10"
+                    >
+                      <div className="flex justify-between items-center mb-2">
+                        <h3 className="font-semibold text-white">{truck.id}</h3>
+                        <span style={{
+                          background: truck.status === 'active' ? 'rgba(16, 185, 129, 0.2)' : 
+                                     truck.status === 'maintenance' ? 'rgba(251, 146, 60, 0.2)' : 'rgba(148, 163, 184, 0.2)',
+                          color: truck.status === 'active' ? '#10b981' : 
+                                 truck.status === 'maintenance' ? '#fb923c' : 'rgba(148, 163, 184, 0.9)',
+                          border: `1px solid ${truck.status === 'active' ? 'rgba(16, 185, 129, 0.3)' : 
+                                               truck.status === 'maintenance' ? 'rgba(251, 146, 60, 0.3)' : 'rgba(148, 163, 184, 0.3)'}`
+                        }} className="px-2 py-1 rounded-full text-xs font-semibold">
+                          {truck.status === 'active' ? t('maintenance.active').toUpperCase() : 
+                           truck.status === 'maintenance' ? t('maintenance.maintenanceStatus').toUpperCase() :
+                           truck.status === 'inactive' ? t('maintenance.inactive').toUpperCase() : 
+                           truck.status.replace('_', ' ').toUpperCase()}
+                        </span>
+                      </div>
+                      <p className="text-sm" style={{ color: 'rgba(148, 163, 184, 0.9)' }}>{truck.model} ({truck.year})</p>
+                      <p className="text-sm" style={{ color: 'rgba(148, 163, 184, 0.9)' }}>{truck.mileage.toLocaleString()} {t('maintenance.miles')}</p>
+                      <div className="mt-2 pt-2" style={{ borderTop: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                        <p className="text-lg font-bold" style={{ color: '#10b981' }}>
+                          ${calculateTotalExpenses(truck).toLocaleString()}
+                        </p>
+                        <p className="text-xs" style={{ color: 'rgba(148, 163, 184, 0.7)' }}>{t('maintenance.totalMonthlyExpenses')}</p>
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-600">{truck.model} ({truck.year})</p>
-                    <p className="text-sm text-gray-600">{truck.mileage.toLocaleString()} {t('maintenance.miles')}</p>
-                    <div className="mt-2 pt-2 border-t border-gray-200">
-                      <p className="text-lg font-bold text-green-600">
-                        ${calculateTotalExpenses(truck).toLocaleString()}
-                      </p>
-                      <p className="text-xs text-gray-500">{t('maintenance.totalMonthlyExpenses')}</p>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Expense Categories */}
-            <div className="bg-white rounded-lg shadow p-6 mt-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">💰 {t('maintenance.expenseCategories')}</h2>
+              {/* Expense Categories - Glassy Card */}
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(34, 211, 238, 0.2)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+              }} className="rounded-2xl p-6 mt-6">
+                <h2 className="text-xl font-semibold mb-4" style={{ color: '#22d3ee' }}>💰 {t('maintenance.expenseCategories')}</h2>
               <div className="space-y-3">
                 {['repair', 'upkeep', 'miscellaneous', 'materials'].map((category) => (
                   <div

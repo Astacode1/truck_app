@@ -1,4 +1,5 @@
-import { Sun, Moon } from 'lucide-react';
+import LightModeIcon from '@mui/icons-material/LightMode'
+import DarkModeIcon from '@mui/icons-material/DarkMode'
 import { useTheme } from '../contexts/ThemeContext';
 
 export default function ThemeToggle() {
@@ -13,9 +14,9 @@ export default function ThemeToggle() {
     >
       <div className="theme-toggle-inner">
         {isDarkMode ? (
-          <Sun className="theme-icon sun-icon" size={18} />
+          <LightModeIcon className="theme-icon sun-icon" sx={{ fontSize: 18 }} />
         ) : (
-          <Moon className="theme-icon moon-icon" size={18} />
+          <DarkModeIcon className="theme-icon moon-icon" sx={{ fontSize: 18 }} />
         )}
       </div>
     </button>

@@ -335,104 +335,188 @@ export default function IFTACalculator() {
   const totalFuel = Object.values(stateData).reduce((sum, state) => sum + state.totalFuel, 0);
   const averageMPG = totalMiles / totalFuel;
 
-  const getStateColor = (taxRate) => {
-    if (taxRate > 0.4) return 'bg-red-100 text-red-800 border-red-200';
-    if (taxRate > 0.3) return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-    return 'bg-green-100 text-green-800 border-green-200';
+  const getStateColor = (taxRate: number) => {
+    if (taxRate > 0.4) {
+      return {
+        bg: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%)',
+        border: '1px solid rgba(239, 68, 68, 0.4)',
+        color: '#ef4444',
+        text: 'High'
+      };
+    }
+    if (taxRate > 0.3) {
+      return {
+        bg: 'linear-gradient(135deg, rgba(251, 146, 60, 0.2) 0%, rgba(249, 115, 22, 0.2) 100%)',
+        border: '1px solid rgba(251, 146, 60, 0.4)',
+        color: '#fb923c',
+        text: 'Med'
+      };
+    }
+    return {
+      bg: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%)',
+      border: '1px solid rgba(16, 185, 129, 0.4)',
+      color: '#10b981',
+      text: 'Low'
+    };
   };
 
   const sortedStates = Object.entries(stateData).sort((a, b) => b[1].taxOwed - a[1].taxOwed);
 
   return (
-    <div className="min-h-screen p-6" style={{ backgroundColor: 'var(--bg-secondary)' }}>
-      <div className="mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>IFTA Tax Calculator</h1>
-            <p className="mt-1" style={{ color: 'var(--text-secondary)' }}>International Fuel Tax Agreement compliance tracking</p>
-          </div>
-          <div className="flex gap-4">
-            <select
-              value={selectedQuarter}
-              onChange={(e) => setSelectedQuarter(e.target.value)}
-              className="border border-gray-300 rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="Q3-2024">Q3 2024</option>
-              <option value="Q2-2024">Q2 2024</option>
-              <option value="Q1-2024">Q1 2024</option>
-            </select>
-            <button 
-              type="button"
-              onClick={handlePrintIFTAForm}
-              className="bg-blue-600 text-white px-6 py-2 rounded-md font-medium hover:bg-blue-700"
-            >
-              📊 Generate IFTA Report
-            </button>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)' }}>
+      {/* Professional Header */}
+      <div style={{ 
+        background: 'rgba(15, 23, 42, 0.8)', 
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(34, 211, 238, 0.1)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+      }} className="mb-8">
+        <div className="px-8 py-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-3xl font-bold text-white tracking-tight">IFTA Tax Calculator</h1>
+                <span className="text-xs font-bold px-3 py-1 rounded-full" style={{
+                  background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(129, 140, 248, 0.2) 100%)',
+                  border: '1px solid rgba(34, 211, 238, 0.3)',
+                  color: '#22d3ee',
+                  letterSpacing: '0.15em'
+                }}>
+                  ATONDA
+                </span>
+              </div>
+              <p className="text-sm" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>International Fuel Tax Agreement compliance tracking</p>
+            </div>
+            <div className="flex gap-4">
+              <select
+                value={selectedQuarter}
+                onChange={(e) => setSelectedQuarter(e.target.value)}
+                style={{
+                  background: 'rgba(15, 23, 42, 0.6)',
+                  border: '1px solid rgba(34, 211, 238, 0.3)',
+                  color: 'white'
+                }}
+                className="rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="Q3-2024">Q3 2024</option>
+                <option value="Q2-2024">Q2 2024</option>
+                <option value="Q1-2024">Q1 2024</option>
+              </select>
+              <button 
+                type="button"
+                onClick={handlePrintIFTAForm}
+                style={{
+                  background: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)',
+                  boxShadow: '0 4px 15px rgba(34, 211, 238, 0.4)'
+                }}
+                className="px-6 py-3 rounded-xl text-white font-semibold flex items-center gap-2 hover:scale-105 transition-transform"
+              >
+                📊 Generate IFTA Report
+              </button>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Quick Calculator Widget */}
-        <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 rounded-lg shadow-lg p-6 mb-8 text-white">
+      <div className="px-8 pb-8">
+        {/* Quick Calculator Widget - Holographic */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(129, 140, 248, 0.2) 50%, rgba(99, 102, 241, 0.2) 100%)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(34, 211, 238, 0.3)',
+          boxShadow: '0 8px 32px rgba(34, 211, 238, 0.3)'
+        }} className="rounded-2xl p-6 mb-8">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">⚡ Quick IFTA Calculator</h2>
-            <span className="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">Live Calculation</span>
+            <h2 className="text-xl font-black" style={{
+              background: 'linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>⚡ Quick IFTA Calculator</h2>
+            <span className="px-3 py-1 rounded-full text-sm font-bold" style={{
+              background: 'rgba(34, 211, 238, 0.2)',
+              border: '1px solid rgba(34, 211, 238, 0.4)',
+              color: '#22d3ee'
+            }}>Live Calculation</span>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
             <div>
-              <label className="block text-sm font-medium text-blue-100 mb-1">State</label>
+              <label className="block text-sm font-bold mb-2" style={{ color: '#22d3ee' }}>STATE</label>
               <select 
                 value={quickCalc.selectedState}
                 onChange={(e) => setQuickCalc(prev => ({ ...prev, selectedState: e.target.value }))}
-                className="w-full bg-white bg-opacity-20 border border-white border-opacity-30 rounded-md px-3 py-2 text-white placeholder-blue-100 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+                className="w-full rounded-lg px-3 py-3 text-white focus:outline-none focus:ring-2 transition-all"
+                style={{
+                  background: 'rgba(30, 41, 59, 0.5)',
+                  border: '1px solid rgba(148, 163, 184, 0.3)',
+                  focusRing: '2px solid #22d3ee'
+                }}
               >
                 {Object.keys(stateTaxRates).map(state => (
-                  <option key={state} value={state} className="text-gray-900">{state}</option>
+                  <option key={state} value={state} style={{ background: '#1e293b' }}>{state}</option>
                 ))}
               </select>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-blue-100 mb-1">Miles Driven</label>
+              <label className="block text-sm font-bold mb-2" style={{ color: '#818cf8' }}>MILES DRIVEN</label>
               <input
                 type="number"
                 value={quickCalc.miles}
                 onChange={(e) => setQuickCalc(prev => ({ ...prev, miles: Number(e.target.value) || 0 }))}
-                className="w-full bg-white bg-opacity-20 border border-white border-opacity-30 rounded-md px-3 py-2 text-white placeholder-blue-100 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+                className="w-full rounded-lg px-3 py-3 text-white focus:outline-none focus:ring-2 transition-all"
+                style={{
+                  background: 'rgba(30, 41, 59, 0.5)',
+                  border: '1px solid rgba(148, 163, 184, 0.3)'
+                }}
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-blue-100 mb-1">Fuel Used (gal)</label>
+              <label className="block text-sm font-bold mb-2" style={{ color: '#fb923c' }}>FUEL USED (GAL)</label>
               <input
                 type="number"
                 value={quickCalc.fuel}
                 onChange={(e) => setQuickCalc(prev => ({ ...prev, fuel: Number(e.target.value) || 0 }))}
-                className="w-full bg-white bg-opacity-20 border border-white border-opacity-30 rounded-md px-3 py-2 text-white placeholder-blue-100 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+                className="w-full rounded-lg px-3 py-3 text-white focus:outline-none focus:ring-2 transition-all"
+                style={{
+                  background: 'rgba(30, 41, 59, 0.5)',
+                  border: '1px solid rgba(148, 163, 184, 0.3)'
+                }}
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-blue-100 mb-1">Tax Rate</label>
-              <div className="bg-white bg-opacity-20 border border-white border-opacity-30 rounded-md px-3 py-2 text-center">
-                <span className="text-lg font-bold">${(stateTaxRates[quickCalc.selectedState] || 0).toFixed(3)}</span>
-                <span className="text-xs block text-blue-100">/gallon</span>
+              <label className="block text-sm font-bold mb-2" style={{ color: '#10b981' }}>TAX RATE</label>
+              <div className="rounded-lg px-3 py-3 text-center" style={{
+                background: 'rgba(16, 185, 129, 0.1)',
+                border: '1px solid rgba(16, 185, 129, 0.3)'
+              }}>
+                <span className="text-xl font-black" style={{ color: '#10b981' }}>${(stateTaxRates[quickCalc.selectedState] || 0).toFixed(3)}</span>
+                <span className="text-xs block" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>/gallon</span>
               </div>
             </div>
             
             <div>
-              <div className="bg-white bg-opacity-20 border border-white border-opacity-30 rounded-md px-3 py-2 text-center">
-                <span className="text-xs text-blue-100 block">Tax Owed</span>
-                <span className="text-2xl font-bold text-yellow-300">${quickTaxResult.toFixed(2)}</span>
+              <div className="rounded-lg px-3 py-3 text-center" style={{
+                background: 'linear-gradient(135deg, rgba(251, 146, 60, 0.2) 0%, rgba(249, 115, 22, 0.2) 100%)',
+                border: '1px solid rgba(251, 146, 60, 0.4)',
+                boxShadow: '0 4px 20px rgba(251, 146, 60, 0.3)'
+              }}>
+                <span className="text-xs block font-bold" style={{ color: '#fb923c' }}>TAX OWED</span>
+                <span className="text-2xl font-black" style={{
+                  background: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>${quickTaxResult.toFixed(2)}</span>
               </div>
             </div>
           </div>
           
-          <div className="flex justify-between items-center mt-4 pt-4 border-t border-white border-opacity-20">
-            <div className="text-sm text-blue-100">
+          <div className="flex justify-between items-center mt-4 pt-4" style={{ borderTop: '1px solid rgba(148, 163, 184, 0.2)' }}>
+            <div className="text-sm" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>
               <span>MPG: </span>
-              <span className="font-semibold text-white">{quickMPG.toFixed(1)}</span>
+              <span className="font-bold text-white">{quickMPG.toFixed(1)}</span>
             </div>
             <button 
               onClick={() => {
@@ -443,7 +527,12 @@ export default function IFTACalculator() {
                 }));
                 alert('Added to trip calculator below!');
               }}
-              className="bg-white text-purple-600 px-4 py-2 rounded-md text-sm font-medium hover:bg-opacity-90 transition-all"
+              className="px-6 py-2 rounded-lg font-bold transition-all duration-300 hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)',
+                color: 'white',
+                boxShadow: '0 4px 15px rgba(34, 211, 238, 0.4)'
+              }}
             >
               Add to Trip Log
             </button>
@@ -452,54 +541,102 @@ export default function IFTACalculator() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="card">
+          <div className="rounded-2xl p-6 transition-all duration-300 hover:scale-105" style={{
+            background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+          }}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Total Tax Owed</p>
-                <p className="text-2xl font-bold text-red-600">${totalTaxOwed.toFixed(2)}</p>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{selectedQuarter}</p>
+                <p className="text-sm font-bold mb-1" style={{ color: 'rgba(148, 163, 184, 0.7)', letterSpacing: '0.05em' }}>TOTAL TAX OWED</p>
+                <p className="text-3xl font-black" style={{
+                  background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>${totalTaxOwed.toFixed(2)}</p>
+                <p className="text-xs mt-1" style={{ color: 'rgba(148, 163, 184, 0.6)' }}>{selectedQuarter}</p>
               </div>
-              <div className="p-3 bg-red-100 rounded-full">
-                <span className="text-2xl">💰</span>
+              <div className="p-4 rounded-full" style={{
+                background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%)',
+                border: '1px solid rgba(239, 68, 68, 0.3)'
+              }}>
+                <span className="text-3xl">💰</span>
               </div>
             </div>
           </div>
 
-          <div className="card">
+          <div className="rounded-2xl p-6 transition-all duration-300 hover:scale-105" style={{
+            background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.15) 0%, rgba(6, 182, 212, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(34, 211, 238, 0.3)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+          }}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Total Miles</p>
-                <p className="text-2xl font-bold text-blue-600">{totalMiles.toLocaleString()}</p>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>All States</p>
+                <p className="text-sm font-bold mb-1" style={{ color: 'rgba(148, 163, 184, 0.7)', letterSpacing: '0.05em' }}>TOTAL MILES</p>
+                <p className="text-3xl font-black" style={{
+                  background: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>{totalMiles.toLocaleString()}</p>
+                <p className="text-xs mt-1" style={{ color: 'rgba(148, 163, 184, 0.6)' }}>All States</p>
               </div>
-              <div className="p-3 bg-blue-100 rounded-full">
-                <span className="text-2xl">🛣️</span>
+              <div className="p-4 rounded-full" style={{
+                background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%)',
+                border: '1px solid rgba(34, 211, 238, 0.3)'
+              }}>
+                <span className="text-3xl">🛣️</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="rounded-2xl p-6 transition-all duration-300 hover:scale-105" style={{
+            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(16, 185, 129, 0.3)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+          }}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Fuel</p>
-                <p className="text-2xl font-bold text-green-600">{totalFuel.toLocaleString()}</p>
-                <p className="text-xs text-gray-500">Gallons</p>
+                <p className="text-sm font-bold mb-1" style={{ color: 'rgba(148, 163, 184, 0.7)', letterSpacing: '0.05em' }}>TOTAL FUEL</p>
+                <p className="text-3xl font-black" style={{
+                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>{totalFuel.toLocaleString()}</p>
+                <p className="text-xs mt-1" style={{ color: 'rgba(148, 163, 184, 0.6)' }}>Gallons</p>
               </div>
-              <div className="p-3 bg-green-100 rounded-full">
-                <span className="text-2xl">⛽</span>
+              <div className="p-4 rounded-full" style={{
+                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%)',
+                border: '1px solid rgba(16, 185, 129, 0.3)'
+              }}>
+                <span className="text-3xl">⛽</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="rounded-2xl p-6 transition-all duration-300 hover:scale-105" style={{
+            background: 'linear-gradient(135deg, rgba(129, 140, 248, 0.15) 0%, rgba(99, 102, 241, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(129, 140, 248, 0.3)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+          }}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Average MPG</p>
-                <p className="text-2xl font-bold text-purple-600">{averageMPG.toFixed(1)}</p>
-                <p className="text-xs text-gray-500">Fleet Average</p>
+                <p className="text-sm font-bold mb-1" style={{ color: 'rgba(148, 163, 184, 0.7)', letterSpacing: '0.05em' }}>AVERAGE MPG</p>
+                <p className="text-3xl font-black" style={{
+                  background: 'linear-gradient(135deg, #818cf8 0%, #6366f1 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>{averageMPG.toFixed(1)}</p>
+                <p className="text-xs mt-1" style={{ color: 'rgba(148, 163, 184, 0.6)' }}>Fleet Average</p>
               </div>
-              <div className="p-3 bg-purple-100 rounded-full">
-                <span className="text-2xl">📈</span>
+              <div className="p-4 rounded-full" style={{
+                background: 'linear-gradient(135deg, rgba(129, 140, 248, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%)',
+                border: '1px solid rgba(129, 140, 248, 0.3)'
+              }}>
+                <span className="text-3xl">📈</span>
               </div>
             </div>
           </div>
@@ -508,41 +645,59 @@ export default function IFTACalculator() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* State Tax Breakdown */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900">State-by-State Tax Breakdown</h2>
-                <p className="text-sm text-gray-600 mt-1">IFTA tax liability by jurisdiction</p>
+            <div className="rounded-2xl shadow-xl" style={{
+              background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(34, 211, 238, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+            }}>
+              <div className="p-6" style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                <h2 className="text-2xl font-black" style={{
+                  background: 'linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>State-by-State Tax Breakdown</h2>
+                <p className="text-sm mt-1" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>IFTA tax liability by jurisdiction</p>
               </div>
               
               <div className="p-6">
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b border-gray-200">
-                        <th className="text-left py-3 px-4 font-semibold text-gray-900">State</th>
-                        <th className="text-right py-3 px-4 font-semibold text-gray-900">Miles</th>
-                        <th className="text-right py-3 px-4 font-semibold text-gray-900">Fuel (gal)</th>
-                        <th className="text-right py-3 px-4 font-semibold text-gray-900">Tax Rate</th>
-                        <th className="text-right py-3 px-4 font-semibold text-gray-900">Tax Owed</th>
+                      <tr style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                        <th className="text-left py-3 px-4 font-bold text-white">STATE</th>
+                        <th className="text-right py-3 px-4 font-bold text-white">MILES</th>
+                        <th className="text-right py-3 px-4 font-bold text-white">FUEL (GAL)</th>
+                        <th className="text-right py-3 px-4 font-bold text-white">TAX RATE</th>
+                        <th className="text-right py-3 px-4 font-bold text-white">TAX OWED</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {sortedStates.map(([state, data]) => (
-                        <tr key={state} className="hover:bg-gray-50">
-                          <td className="py-3 px-4">
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium text-gray-900">{state}</span>
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStateColor(data.taxRate)}`}>
-                                {data.taxRate > 0.4 ? 'High' : data.taxRate > 0.3 ? 'Med' : 'Low'}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="py-3 px-4 text-right text-gray-900">{data.totalMiles.toLocaleString()}</td>
-                          <td className="py-3 px-4 text-right text-gray-900">{data.totalFuel.toLocaleString()}</td>
-                          <td className="py-3 px-4 text-right text-gray-900">${data.taxRate.toFixed(3)}</td>
-                          <td className="py-3 px-4 text-right font-semibold text-red-600">${data.taxOwed.toFixed(2)}</td>
-                        </tr>
-                      ))}
+                    <tbody>
+                      {sortedStates.map(([state, data]) => {
+                        const colorStyle = getStateColor(data.taxRate);
+                        return (
+                          <tr key={state} className="transition-all duration-300 hover:scale-102" style={{ 
+                            borderBottom: '1px solid rgba(148, 163, 184, 0.1)'
+                          }}>
+                            <td className="py-3 px-4">
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-white">{state}</span>
+                                <span className="px-2 py-1 rounded-full text-xs font-bold" style={{
+                                  background: colorStyle.bg,
+                                  border: colorStyle.border,
+                                  color: colorStyle.color
+                                }}>
+                                  {colorStyle.text}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="py-3 px-4 text-right text-white font-semibold">{data.totalMiles.toLocaleString()}</td>
+                            <td className="py-3 px-4 text-right text-white font-semibold">{data.totalFuel.toLocaleString()}</td>
+                            <td className="py-3 px-4 text-right font-bold" style={{ color: '#fb923c' }}>${data.taxRate.toFixed(3)}</td>
+                            <td className="py-3 px-4 text-right font-black" style={{ color: '#ef4444' }}>${data.taxOwed.toFixed(2)}</td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -553,73 +708,123 @@ export default function IFTACalculator() {
           {/* Quick Actions & Info */}
           <div className="lg:col-span-1 space-y-6">
             {/* IFTA Quarter Summary */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">📅 Quarter Summary</h3>
+            <div className="rounded-2xl shadow-xl p-6" style={{
+              background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(34, 211, 238, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+            }}>
+              <h3 className="text-lg font-black mb-4" style={{
+                background: 'linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>📅 Quarter Summary</h3>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Reporting Period:</span>
-                  <span className="font-medium text-gray-900">{selectedQuarter}</span>
+                  <span className="text-sm font-bold" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>Reporting Period:</span>
+                  <span className="font-bold text-white">{selectedQuarter}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">States Traveled:</span>
-                  <span className="font-medium text-gray-900">{Object.keys(stateData).length}</span>
+                  <span className="text-sm font-bold" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>States Traveled:</span>
+                  <span className="font-bold" style={{ color: '#22d3ee' }}>{Object.keys(stateData).length}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Total Trips:</span>
-                  <span className="font-medium text-gray-900">{trips.length}</span>
+                  <span className="text-sm font-bold" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>Total Trips:</span>
+                  <span className="font-bold" style={{ color: '#818cf8' }}>{trips.length}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Filing Due:</span>
-                  <span className="font-medium text-yellow-600">Oct 31, 2024</span>
+                  <span className="text-sm font-bold" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>Filing Due:</span>
+                  <span className="font-bold" style={{ color: '#fb923c' }}>Oct 31, 2024</span>
                 </div>
               </div>
             </div>
 
             {/* Top Tax States */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">🏆 Highest Tax States</h3>
+            <div className="rounded-2xl shadow-xl p-6" style={{
+              background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(251, 146, 60, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+            }}>
+              <h3 className="text-lg font-black mb-4" style={{
+                background: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>🏆 Highest Tax States</h3>
               <div className="space-y-3">
                 {sortedStates.slice(0, 5).map(([state, data]) => (
-                  <div key={state} className="flex justify-between items-center">
+                  <div key={state} className="flex justify-between items-center p-3 rounded-lg transition-all duration-300 hover:scale-105" style={{
+                    background: 'rgba(251, 146, 60, 0.05)',
+                    border: '1px solid rgba(251, 146, 60, 0.2)'
+                  }}>
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-gray-900">{state}</span>
-                      <span className="text-xs text-gray-500">${data.taxRate.toFixed(3)}/gal</span>
+                      <span className="font-black text-white">{state}</span>
+                      <span className="text-xs font-bold" style={{ color: 'rgba(148, 163, 184, 0.7)' }}>${data.taxRate.toFixed(3)}/gal</span>
                     </div>
-                    <span className="font-semibold text-red-600">${data.taxOwed.toFixed(2)}</span>
+                    <span className="font-black" style={{ color: '#ef4444' }}>${data.taxOwed.toFixed(2)}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Actions */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">⚡ Quick Actions</h3>
+            <div className="rounded-2xl shadow-xl p-6" style={{
+              background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(16, 185, 129, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+            }}>
+              <h3 className="text-lg font-black mb-4" style={{
+                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>⚡ Quick Actions</h3>
               <div className="space-y-3">
                 <button 
                   type="button"
                   onClick={() => setShowTripDetails(!showTripDetails)}
-                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700"
+                  className="w-full py-3 px-4 rounded-lg text-sm font-bold transition-all duration-300 hover:scale-105"
+                  style={{
+                    background: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)',
+                    color: 'white',
+                    boxShadow: '0 4px 15px rgba(34, 211, 238, 0.4)'
+                  }}
                 >
                   {showTripDetails ? 'Hide' : 'Show'} Trip Details
                 </button>
                 <button 
                   type="button"
                   onClick={handleExportToExcel}
-                  className="w-full bg-green-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-green-700"
+                  className="w-full py-3 px-4 rounded-lg text-sm font-bold transition-all duration-300 hover:scale-105"
+                  style={{
+                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                    color: 'white',
+                    boxShadow: '0 4px 15px rgba(16, 185, 129, 0.4)'
+                  }}
                 >
                   Export to Excel
                 </button>
                 <button 
                   type="button"
                   onClick={handlePrintIFTAForm}
-                  className="w-full bg-purple-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-purple-700"
+                  className="w-full py-3 px-4 rounded-lg text-sm font-bold transition-all duration-300 hover:scale-105"
+                  style={{
+                    background: 'linear-gradient(135deg, #818cf8 0%, #6366f1 100%)',
+                    color: 'white',
+                    boxShadow: '0 4px 15px rgba(129, 140, 248, 0.4)'
+                  }}
                 >
                   Print IFTA Form
                 </button>
                 <button 
                   type="button"
                   onClick={handleAddNewTrip}
-                  className="w-full bg-yellow-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-yellow-700"
+                  className="w-full py-3 px-4 rounded-lg text-sm font-bold transition-all duration-300 hover:scale-105"
+                  style={{
+                    background: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)',
+                    color: 'white',
+                    boxShadow: '0 4px 15px rgba(251, 146, 60, 0.4)'
+                  }}
                 >
                   Add New Trip
                 </button>
@@ -629,54 +834,79 @@ export default function IFTACalculator() {
         </div>
 
         {/* Interactive IFTA Calculator */}
-        <div className="bg-white rounded-lg shadow p-6 mt-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">🧮 Interactive IFTA Calculator</h2>
+        <div className="rounded-2xl shadow-xl p-6 mt-8" style={{
+          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(34, 211, 238, 0.2)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+        }}>
+          <h2 className="text-2xl font-black mb-6" style={{
+            background: 'linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>🧮 Interactive IFTA Calculator</h2>
           
           {/* Calculator Form */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Input Section */}
             <div className="space-y-6">
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200">
-                <h3 className="text-lg font-semibold text-blue-900 mb-4">📝 Trip Information</h3>
+              <div className="p-6 rounded-xl" style={{
+                background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.1) 0%, rgba(129, 140, 248, 0.1) 100%)',
+                border: '1px solid rgba(34, 211, 238, 0.3)'
+              }}>
+                <h3 className="text-lg font-black mb-4" style={{ color: '#22d3ee' }}>📝 Trip Information</h3>
                 
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Trip Date</label>
+                      <label className="block text-sm font-bold mb-2" style={{ color: '#22d3ee' }}>TRIP DATE</label>
                       <input
                         type="date"
                         value={calculatorInputs.tripDate}
                         onChange={(e) => updateCalculatorInput('tripDate', e.target.value)}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 transition-all"
+                        style={{
+                          background: 'rgba(30, 41, 59, 0.5)',
+                          border: '1px solid rgba(148, 163, 184, 0.3)',
+                          colorScheme: 'dark'
+                        }}
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Truck ID</label>
+                      <label className="block text-sm font-bold mb-2" style={{ color: '#818cf8' }}>TRUCK ID</label>
                       <select 
                         value={calculatorInputs.truckId}
                         onChange={(e) => updateCalculatorInput('truckId', e.target.value)}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 transition-all"
+                        style={{
+                          background: 'rgba(30, 41, 59, 0.5)',
+                          border: '1px solid rgba(148, 163, 184, 0.3)'
+                        }}
                       >
-                        <option>TRK-001</option>
-                        <option>TRK-002</option>
-                        <option>TRK-003</option>
+                        <option style={{ background: '#1e293b' }}>TRK-001</option>
+                        <option style={{ background: '#1e293b' }}>TRK-002</option>
+                        <option style={{ background: '#1e293b' }}>TRK-003</option>
                       </select>
                     </div>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Starting Odometer</label>
+                      <label className="block text-sm font-bold mb-2" style={{ color: '#10b981' }}>STARTING ODOMETER</label>
                       <input
                         type="number"
                         value={calculatorInputs.startOdometer || ''}
                         onChange={(e) => updateCalculatorInput('startOdometer', Number(e.target.value) || 0)}
                         placeholder="185000"
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 transition-all"
+                        style={{
+                          background: 'rgba(30, 41, 59, 0.5)',
+                          border: '1px solid rgba(148, 163, 184, 0.3)'
+                        }}
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Ending Odometer</label>
+                      <label className="block text-sm font-bold mb-2" style={{ color: '#fb923c' }}>ENDING ODOMETER</label>
                       <input
                         type="number"
                         value={calculatorInputs.endOdometer || ''}

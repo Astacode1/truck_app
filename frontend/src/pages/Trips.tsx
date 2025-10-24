@@ -1,5 +1,15 @@
 import { useState, useEffect } from 'react'
-import { Plus, Edit2, Trash2, Eye, X, MapPin, Package, Building2, Calendar } from 'lucide-react'
+import { 
+  RiAddFill as Plus, 
+  RiEdit2Fill as Edit2, 
+  RiDeleteBin6Fill as Trash2, 
+  RiEyeFill as Eye, 
+  RiCloseFill as X, 
+  RiMapPinFill as MapPin, 
+  RiInboxFill as Package, 
+  RiBuildingFill as Building2, 
+  RiCalendarFill as Calendar 
+} from 'react-icons/ri'
 
 interface Trip {
   id: string
@@ -178,36 +188,99 @@ export default function Trips() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'available': return 'bg-green-100 text-green-800';
-      case 'assigned': return 'bg-yellow-100 text-yellow-800';
-      case 'in-progress': return 'bg-blue-100 text-blue-800';
-      case 'completed': return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'available': 
+        return {
+          bg: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%)',
+          border: '1px solid rgba(16, 185, 129, 0.4)',
+          color: '#10b981'
+        };
+      case 'assigned': 
+        return {
+          bg: 'linear-gradient(135deg, rgba(251, 146, 60, 0.2) 0%, rgba(249, 115, 22, 0.2) 100%)',
+          border: '1px solid rgba(251, 146, 60, 0.4)',
+          color: '#fb923c'
+        };
+      case 'in-progress': 
+        return {
+          bg: 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(129, 140, 248, 0.2) 100%)',
+          border: '1px solid rgba(34, 211, 238, 0.4)',
+          color: '#22d3ee'
+        };
+      case 'completed': 
+        return {
+          bg: 'linear-gradient(135deg, rgba(148, 163, 184, 0.2) 0%, rgba(100, 116, 139, 0.2) 100%)',
+          border: '1px solid rgba(148, 163, 184, 0.4)',
+          color: '#94a3b8'
+        };
+      default: 
+        return {
+          bg: 'linear-gradient(135deg, rgba(148, 163, 184, 0.2) 0%, rgba(100, 116, 139, 0.2) 100%)',
+          border: '1px solid rgba(148, 163, 184, 0.4)',
+          color: '#94a3b8'
+        };
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Trip Management</h1>
-          <button 
-            type="button"
-            onClick={openAddModal}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 flex items-center gap-2"
-          >
-            <Plus size={20} />
-            Add New Trip
-          </button>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)' }}>
+      {/* Professional Header */}
+      <div style={{ 
+        background: 'rgba(15, 23, 42, 0.8)', 
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(34, 211, 238, 0.1)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+      }} className="mb-8">
+        <div className="px-8 py-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-3xl font-bold text-white tracking-tight">Trip Management</h1>
+                <span className="text-xs font-bold px-3 py-1 rounded-full" style={{
+                  background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(129, 140, 248, 0.2) 100%)',
+                  border: '1px solid rgba(34, 211, 238, 0.3)',
+                  color: '#22d3ee',
+                  letterSpacing: '0.15em'
+                }}>
+                  ATONDA
+                </span>
+              </div>
+              <p className="text-sm" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>Manage and track all trips</p>
+            </div>
+            <button 
+              type="button"
+              onClick={openAddModal}
+              style={{
+                background: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)',
+                boxShadow: '0 4px 15px rgba(34, 211, 238, 0.4)'
+              }}
+              className="px-6 py-3 rounded-xl text-white font-semibold flex items-center gap-2 hover:scale-105 transition-transform"
+            >
+              <Plus size={20} />
+              Add New Trip
+            </button>
+          </div>
         </div>
+      </div>
 
-        {/* Filters and Search */}
-        <div className="bg-white p-6 rounded-lg shadow mb-6">
+      <div className="px-8 pb-8">
+        <div className="mx-auto max-w-7xl">
+
+        {/* Glassy Filters and Search */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(34, 211, 238, 0.2)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+        }} className="p-6 rounded-2xl mb-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
             <div className="flex items-center space-x-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
-                <select className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <label className="block text-sm font-medium text-white mb-1">Filter by Status</label>
+                <select style={{
+                  background: 'rgba(30, 41, 59, 0.5)',
+                  border: '1px solid rgba(148, 163, 184, 0.3)',
+                  color: 'white'
+                }} className="rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
                   <option value="all">All Status</option>
                   <option value="available">Available</option>
                   <option value="assigned">Assigned</option>
@@ -217,11 +290,16 @@ export default function Trips() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Search Trips</label>
+              <label className="block text-sm font-medium text-white mb-1">Search Trips</label>
               <input
                 type="text"
                 placeholder="Search by location, cargo, or company..."
-                className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-80"
+                style={{
+                  background: 'rgba(30, 41, 59, 0.5)',
+                  border: '1px solid rgba(148, 163, 184, 0.3)',
+                  color: 'white'
+                }}
+                className="rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary w-80 placeholder-gray-400"
               />
             </div>
           </div>
@@ -229,43 +307,79 @@ export default function Trips() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white p-4 rounded-lg shadow text-center">
-            <h3 className="text-lg font-semibold text-gray-900">Quick Add</h3>
-            <p className="text-sm text-gray-600 mb-3">Create a new trip</p>
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.15) 0%, rgba(6, 182, 212, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(34, 211, 238, 0.3)',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+          }} className="p-4 rounded-xl text-center hover:scale-105 transition-transform">
+            <h3 className="text-lg font-semibold text-white">Quick Add</h3>
+            <p className="text-sm mb-3" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>Create a new trip</p>
             <button 
               type="button"
               onClick={openAddModal}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700"
+              style={{
+                background: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)',
+                boxShadow: '0 2px 10px rgba(34, 211, 238, 0.3)'
+              }}
+              className="px-4 py-2 rounded-lg text-sm text-white font-semibold hover:scale-105 transition-transform"
             >
               Add Trip
             </button>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow text-center">
-            <h3 className="text-lg font-semibold text-gray-900">Load Board</h3>
-            <p className="text-sm text-gray-600 mb-3">Browse available loads</p>
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(16, 185, 129, 0.3)',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+          }} className="p-4 rounded-xl text-center hover:scale-105 transition-transform">
+            <h3 className="text-lg font-semibold text-white">Load Board</h3>
+            <p className="text-sm mb-3" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>Browse available loads</p>
             <button 
               type="button"
-              className="bg-green-600 text-white px-4 py-2 rounded-md text-sm hover:bg-green-700"
+              style={{
+                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                boxShadow: '0 2px 10px rgba(16, 185, 129, 0.3)'
+              }}
+              className="px-4 py-2 rounded-lg text-sm text-white font-semibold hover:scale-105 transition-transform"
             >
               Browse Loads
             </button>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow text-center">
-            <h3 className="text-lg font-semibold text-gray-900">Route Planner</h3>
-            <p className="text-sm text-gray-600 mb-3">Plan optimal routes</p>
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(129, 140, 248, 0.15) 0%, rgba(99, 102, 241, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(129, 140, 248, 0.3)',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+          }} className="p-4 rounded-xl text-center hover:scale-105 transition-transform">
+            <h3 className="text-lg font-semibold text-white">Route Planner</h3>
+            <p className="text-sm mb-3" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>Plan optimal routes</p>
             <button 
               type="button"
-              className="bg-purple-600 text-white px-4 py-2 rounded-md text-sm hover:bg-purple-700"
+              style={{
+                background: 'linear-gradient(135deg, #818cf8 0%, #6366f1 100%)',
+                boxShadow: '0 2px 10px rgba(129, 140, 248, 0.3)'
+              }}
+              className="px-4 py-2 rounded-lg text-sm text-white font-semibold hover:scale-105 transition-transform"
             >
               Plan Route
             </button>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow text-center">
-            <h3 className="text-lg font-semibold text-gray-900">Analytics</h3>
-            <p className="text-sm text-gray-600 mb-3">View trip analytics</p>
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(251, 146, 60, 0.15) 0%, rgba(249, 115, 22, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(251, 146, 60, 0.3)',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+          }} className="p-4 rounded-xl text-center hover:scale-105 transition-transform">
+            <h3 className="text-lg font-semibold text-white">Analytics</h3>
+            <p className="text-sm mb-3" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>View trip analytics</p>
             <button 
               type="button"
-              className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm hover:bg-indigo-700"
+              style={{
+                background: 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)',
+                boxShadow: '0 2px 10px rgba(251, 146, 60, 0.3)'
+              }}
+              className="px-4 py-2 rounded-lg text-sm text-white font-semibold hover:scale-105 transition-transform"
             >
               View Stats
             </button>
@@ -274,56 +388,114 @@ export default function Trips() {
 
         {/* Trips Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
-          {trips.map((trip) => (
-            <div key={trip.id} className="bg-white rounded-lg shadow p-6">
+          {trips.map((trip) => {
+            const statusStyle = getStatusColor(trip.status);
+            return (
+            <div key={trip.id} style={{
+              background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(34, 211, 238, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+            }} className="rounded-2xl p-6 hover:scale-105 transition-transform">
               <div className="flex justify-between items-start mb-4">
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(trip.status)}`}>
+                <span className="px-3 py-1 rounded-full text-xs font-bold" style={{
+                  background: statusStyle.bg,
+                  border: statusStyle.border,
+                  color: statusStyle.color,
+                  letterSpacing: '0.05em'
+                }}>
                   {trip.status.replace('-', ' ').toUpperCase()}
                 </span>
-                <span className="text-lg font-bold text-green-600">${trip.rate.toLocaleString()}</span>
+                <span className="text-xl font-black" style={{
+                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>${trip.rate.toLocaleString()}</span>
               </div>
               
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm text-gray-600">Route</p>
-                  <p className="font-medium text-gray-900">
-                    📍 {trip.startingPoint}
-                  </p>
-                  <p className="font-medium text-gray-900">
-                    🏁 {trip.destination}
-                  </p>
-                  <p className="text-sm text-gray-500">{trip.distance} miles • {trip.estimatedDuration}</p>
-                </div>
-                
-                <div>
-                  <p className="text-sm text-gray-600">Cargo Details</p>
-                  <p className="font-medium text-gray-900">📦 {trip.cargoType}</p>
-                  <p className="text-sm text-gray-500">⚖️ {trip.weight.toLocaleString()} lbs</p>
-                </div>
-                
-                <div>
-                  <p className="text-sm text-gray-600">Company</p>
-                  <p className="font-medium text-gray-900">🏢 {trip.company}</p>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600">Pickup Date</p>
-                    <p className="text-sm font-medium text-gray-900">📅 {trip.pickupDate}</p>
+                  <p className="text-xs font-bold mb-1" style={{ 
+                    color: 'rgba(148, 163, 184, 0.7)',
+                    letterSpacing: '0.05em'
+                  }}>ROUTE</p>
+                  <div className="flex items-start gap-2 mb-1">
+                    <span style={{ color: '#22d3ee' }}>📍</span>
+                    <p className="font-semibold text-white text-sm">{trip.startingPoint}</p>
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Delivery Date</p>
-                    <p className="text-sm font-medium text-gray-900">📅 {trip.deliveryDate}</p>
+                  <div className="flex items-start gap-2 mb-2">
+                    <span style={{ color: '#818cf8' }}>🏁</span>
+                    <p className="font-semibold text-white text-sm">{trip.destination}</p>
+                  </div>
+                  <div className="flex items-center gap-3 text-xs" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>
+                    <span className="px-2 py-1 rounded" style={{
+                      background: 'rgba(34, 211, 238, 0.1)',
+                      border: '1px solid rgba(34, 211, 238, 0.2)',
+                      color: '#22d3ee'
+                    }}>🛣️ {trip.distance} mi</span>
+                    <span className="px-2 py-1 rounded" style={{
+                      background: 'rgba(129, 140, 248, 0.1)',
+                      border: '1px solid rgba(129, 140, 248, 0.2)',
+                      color: '#818cf8'
+                    }}>⏱️ {trip.estimatedDuration}</span>
+                  </div>
+                </div>
+                
+                <div>
+                  <p className="text-xs font-bold mb-1" style={{ 
+                    color: 'rgba(148, 163, 184, 0.7)',
+                    letterSpacing: '0.05em'
+                  }}>CARGO DETAILS</p>
+                  <p className="font-semibold text-white text-sm flex items-center gap-2">
+                    <span style={{ color: '#fb923c' }}>📦</span>
+                    {trip.cargoType}
+                  </p>
+                  <p className="text-xs mt-1 px-2 py-1 inline-block rounded" style={{ 
+                    background: 'rgba(251, 146, 60, 0.1)',
+                    border: '1px solid rgba(251, 146, 60, 0.2)',
+                    color: '#fb923c'
+                  }}>⚖️ {trip.weight.toLocaleString()} lbs</p>
+                </div>
+                
+                <div>
+                  <p className="text-xs font-bold mb-1" style={{ 
+                    color: 'rgba(148, 163, 184, 0.7)',
+                    letterSpacing: '0.05em'
+                  }}>COMPANY</p>
+                  <p className="font-semibold text-white text-sm flex items-center gap-2">
+                    <span style={{ color: '#10b981' }}>🏢</span>
+                    {trip.company}
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-2 rounded-lg" style={{
+                    background: 'rgba(34, 211, 238, 0.05)',
+                    border: '1px solid rgba(34, 211, 238, 0.2)'
+                  }}>
+                    <p className="text-xs font-bold mb-1" style={{ color: '#22d3ee' }}>PICKUP</p>
+                    <p className="text-xs font-semibold text-white">📅 {trip.pickupDate}</p>
+                  </div>
+                  <div className="p-2 rounded-lg" style={{
+                    background: 'rgba(129, 140, 248, 0.05)',
+                    border: '1px solid rgba(129, 140, 248, 0.2)'
+                  }}>
+                    <p className="text-xs font-bold mb-1" style={{ color: '#818cf8' }}>DELIVERY</p>
+                    <p className="text-xs font-semibold text-white">📅 {trip.deliveryDate}</p>
                   </div>
                 </div>
               </div>
               
-              <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
+              <div className="mt-4 pt-4 space-y-2" style={{ borderTop: '1px solid rgba(148, 163, 184, 0.2)' }}>
                 <div className="flex gap-2">
                   <button 
                     type="button"
                     onClick={() => openViewModal(trip)}
-                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 flex items-center justify-center gap-1"
+                    style={{
+                      background: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)',
+                      boxShadow: '0 2px 10px rgba(34, 211, 238, 0.3)'
+                    }}
+                    className="flex-1 text-white py-2 px-4 rounded-lg text-sm font-bold hover:scale-105 transition-transform flex items-center justify-center gap-1"
                   >
                     <Eye size={16} />
                     View
@@ -331,7 +503,11 @@ export default function Trips() {
                   <button 
                     type="button"
                     onClick={() => openEditModal(trip)}
-                    className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-green-700 flex items-center justify-center gap-1"
+                    style={{
+                      background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                      boxShadow: '0 2px 10px rgba(16, 185, 129, 0.3)'
+                    }}
+                    className="flex-1 text-white py-2 px-4 rounded-lg text-sm font-bold hover:scale-105 transition-transform flex items-center justify-center gap-1"
                   >
                     <Edit2 size={16} />
                     Edit
@@ -339,28 +515,51 @@ export default function Trips() {
                   <button 
                     type="button"
                     onClick={() => handleDelete(trip.id)}
-                    className="bg-red-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-red-700"
+                    style={{
+                      background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                      boxShadow: '0 2px 10px rgba(239, 68, 68, 0.3)'
+                    }}
+                    className="text-white py-2 px-4 rounded-lg text-sm font-bold hover:scale-105 transition-transform"
                   >
                     <Trash2 size={16} />
                   </button>
                 </div>
               </div>
             </div>
-          ))}
+          )})}
         </div>
 
         {/* Modal */}
         {showModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-gray-900">
+          <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{
+            background: 'rgba(0, 0, 0, 0.8)',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <div className="rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto" style={{
+              background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.95) 100%)',
+              border: '1px solid rgba(34, 211, 238, 0.3)',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.8)'
+            }}>
+              <div className="sticky top-0 px-6 py-4 flex justify-between items-center" style={{
+                background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.15) 0%, rgba(129, 140, 248, 0.15) 100%)',
+                borderBottom: '1px solid rgba(34, 211, 238, 0.2)'
+              }}>
+                <h2 className="text-2xl font-black" style={{
+                  background: 'linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>
                   {modalMode === 'add' ? '➕ Add New Trip' : modalMode === 'edit' ? '✏️ Edit Trip' : '👁️ Trip Details'}
                 </h2>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="p-2 rounded-lg transition-all duration-300 hover:scale-110"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    color: '#fca5a5'
+                  }}
                 >
                   <X size={24} />
                 </button>
@@ -370,9 +569,12 @@ export default function Trips() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Starting Point */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                    <label className="block text-sm font-bold mb-2 flex items-center gap-2" style={{ 
+                      color: '#22d3ee',
+                      letterSpacing: '0.05em'
+                    }}>
                       <MapPin size={16} />
-                      Starting Point *
+                      STARTING POINT *
                     </label>
                     <input
                       type="text"
@@ -381,15 +583,24 @@ export default function Trips() {
                       value={formData.startingPoint || ''}
                       onChange={(e) => setFormData({ ...formData, startingPoint: e.target.value })}
                       placeholder="e.g., Los Angeles, CA"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all"
+                      style={{
+                        background: 'rgba(30, 41, 59, 0.5)',
+                        border: '1px solid rgba(148, 163, 184, 0.3)',
+                        color: 'white',
+                        focusRing: '2px solid #22d3ee'
+                      }}
                     />
                   </div>
 
                   {/* Destination */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                    <label className="block text-sm font-bold mb-2 flex items-center gap-2" style={{ 
+                      color: '#818cf8',
+                      letterSpacing: '0.05em'
+                    }}>
                       <MapPin size={16} />
-                      Destination *
+                      DESTINATION *
                     </label>
                     <input
                       type="text"
@@ -398,37 +609,53 @@ export default function Trips() {
                       value={formData.destination || ''}
                       onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
                       placeholder="e.g., Phoenix, AZ"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all"
+                      style={{
+                        background: 'rgba(30, 41, 59, 0.5)',
+                        border: '1px solid rgba(148, 163, 184, 0.3)',
+                        color: 'white'
+                      }}
                     />
                   </div>
 
                   {/* Cargo Type */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                    <label className="block text-sm font-bold mb-2 flex items-center gap-2" style={{ 
+                      color: '#fb923c',
+                      letterSpacing: '0.05em'
+                    }}>
                       <Package size={16} />
-                      Cargo Type *
+                      CARGO TYPE *
                     </label>
                     <select
                       required
                       disabled={modalMode === 'view'}
                       value={formData.cargoType || ''}
                       onChange={(e) => setFormData({ ...formData, cargoType: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all"
+                      style={{
+                        background: 'rgba(30, 41, 59, 0.5)',
+                        border: '1px solid rgba(148, 163, 184, 0.3)',
+                        color: 'white'
+                      }}
                     >
-                      <option value="">Select cargo type</option>
-                      <option value="Electronics">📱 Electronics</option>
-                      <option value="Automotive Parts">🔧 Automotive Parts</option>
-                      <option value="Food & Beverages">🍎 Food & Beverages</option>
-                      <option value="Construction Materials">🏗️ Construction Materials</option>
-                      <option value="Chemicals">⚗️ Chemicals</option>
-                      <option value="General Freight">📦 General Freight</option>
+                      <option value="" style={{ background: '#1e293b' }}>Select cargo type</option>
+                      <option value="Electronics" style={{ background: '#1e293b' }}>📱 Electronics</option>
+                      <option value="Automotive Parts" style={{ background: '#1e293b' }}>🔧 Automotive Parts</option>
+                      <option value="Food & Beverages" style={{ background: '#1e293b' }}>🍎 Food & Beverages</option>
+                      <option value="Construction Materials" style={{ background: '#1e293b' }}>🏗️ Construction Materials</option>
+                      <option value="Chemicals" style={{ background: '#1e293b' }}>⚗️ Chemicals</option>
+                      <option value="General Freight" style={{ background: '#1e293b' }}>📦 General Freight</option>
                     </select>
                   </div>
 
                   {/* Weight */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Weight (lbs) *
+                    <label className="block text-sm font-bold mb-2" style={{ 
+                      color: '#10b981',
+                      letterSpacing: '0.05em'
+                    }}>
+                      WEIGHT (LBS) *
                     </label>
                     <input
                       type="number"
@@ -437,34 +664,50 @@ export default function Trips() {
                       value={formData.weight || ''}
                       onChange={(e) => setFormData({ ...formData, weight: Number(e.target.value) })}
                       placeholder="15000"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all"
+                      style={{
+                        background: 'rgba(30, 41, 59, 0.5)',
+                        border: '1px solid rgba(148, 163, 184, 0.3)',
+                        color: 'white'
+                      }}
                     />
                   </div>
 
                   {/* Company */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                    <label className="block text-sm font-bold mb-2 flex items-center gap-2" style={{ 
+                      color: '#22d3ee',
+                      letterSpacing: '0.05em'
+                    }}>
                       <Building2 size={16} />
-                      Company *
+                      COMPANY *
                     </label>
                     <select
                       required
                       disabled={modalMode === 'view'}
                       value={formData.company || ''}
                       onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all"
+                      style={{
+                        background: 'rgba(30, 41, 59, 0.5)',
+                        border: '1px solid rgba(148, 163, 184, 0.3)',
+                        color: 'white'
+                      }}
                     >
-                      <option value="">Select company</option>
+                      <option value="" style={{ background: '#1e293b' }}>Select company</option>
                       {companies.map((company) => (
-                        <option key={company.id} value={company.name}>{company.name}</option>
+                        <option key={company.id} value={company.name} style={{ background: '#1e293b' }}>{company.name}</option>
                       ))}
                     </select>
                   </div>
 
                   {/* Rate */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Rate ($) *
+                    <label className="block text-sm font-bold mb-2" style={{ 
+                      color: '#10b981',
+                      letterSpacing: '0.05em'
+                    }}>
+                      RATE ($) *
                     </label>
                     <input
                       type="number"
@@ -473,14 +716,22 @@ export default function Trips() {
                       value={formData.rate || ''}
                       onChange={(e) => setFormData({ ...formData, rate: Number(e.target.value) })}
                       placeholder="2500"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all"
+                      style={{
+                        background: 'rgba(30, 41, 59, 0.5)',
+                        border: '1px solid rgba(148, 163, 184, 0.3)',
+                        color: 'white'
+                      }}
                     />
                   </div>
 
                   {/* Distance */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Distance (miles) *
+                    <label className="block text-sm font-bold mb-2" style={{ 
+                      color: '#818cf8',
+                      letterSpacing: '0.05em'
+                    }}>
+                      DISTANCE (MILES) *
                     </label>
                     <input
                       type="number"
@@ -489,14 +740,22 @@ export default function Trips() {
                       value={formData.distance || ''}
                       onChange={(e) => setFormData({ ...formData, distance: Number(e.target.value) })}
                       placeholder="372"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all"
+                      style={{
+                        background: 'rgba(30, 41, 59, 0.5)',
+                        border: '1px solid rgba(148, 163, 184, 0.3)',
+                        color: 'white'
+                      }}
                     />
                   </div>
 
                   {/* Estimated Duration */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Estimated Duration *
+                    <label className="block text-sm font-bold mb-2" style={{ 
+                      color: '#fb923c',
+                      letterSpacing: '0.05em'
+                    }}>
+                      ESTIMATED DURATION *
                     </label>
                     <input
                       type="text"
@@ -505,15 +764,23 @@ export default function Trips() {
                       value={formData.estimatedDuration || ''}
                       onChange={(e) => setFormData({ ...formData, estimatedDuration: e.target.value })}
                       placeholder="6 hours"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all"
+                      style={{
+                        background: 'rgba(30, 41, 59, 0.5)',
+                        border: '1px solid rgba(148, 163, 184, 0.3)',
+                        color: 'white'
+                      }}
                     />
                   </div>
 
                   {/* Pickup Date */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                    <label className="block text-sm font-bold mb-2 flex items-center gap-2" style={{ 
+                      color: '#22d3ee',
+                      letterSpacing: '0.05em'
+                    }}>
                       <Calendar size={16} />
-                      Pickup Date *
+                      PICKUP DATE *
                     </label>
                     <input
                       type="date"
@@ -521,15 +788,24 @@ export default function Trips() {
                       disabled={modalMode === 'view'}
                       value={formData.pickupDate || ''}
                       onChange={(e) => setFormData({ ...formData, pickupDate: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all"
+                      style={{
+                        background: 'rgba(30, 41, 59, 0.5)',
+                        border: '1px solid rgba(148, 163, 184, 0.3)',
+                        color: 'white',
+                        colorScheme: 'dark'
+                      }}
                     />
                   </div>
 
                   {/* Delivery Date */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                    <label className="block text-sm font-bold mb-2 flex items-center gap-2" style={{ 
+                      color: '#818cf8',
+                      letterSpacing: '0.05em'
+                    }}>
                       <Calendar size={16} />
-                      Delivery Date *
+                      DELIVERY DATE *
                     </label>
                     <input
                       type="date"
@@ -537,33 +813,50 @@ export default function Trips() {
                       disabled={modalMode === 'view'}
                       value={formData.deliveryDate || ''}
                       onChange={(e) => setFormData({ ...formData, deliveryDate: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all"
+                      style={{
+                        background: 'rgba(30, 41, 59, 0.5)',
+                        border: '1px solid rgba(148, 163, 184, 0.3)',
+                        color: 'white',
+                        colorScheme: 'dark'
+                      }}
                     />
                   </div>
 
                   {/* Status */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Status *
+                    <label className="block text-sm font-bold mb-2" style={{ 
+                      color: '#10b981',
+                      letterSpacing: '0.05em'
+                    }}>
+                      STATUS *
                     </label>
                     <select
                       required
                       disabled={modalMode === 'view'}
                       value={formData.status || 'available'}
                       onChange={(e) => setFormData({ ...formData, status: e.target.value as Trip['status'] })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all"
+                      style={{
+                        background: 'rgba(30, 41, 59, 0.5)',
+                        border: '1px solid rgba(148, 163, 184, 0.3)',
+                        color: 'white'
+                      }}
                     >
-                      <option value="available">Available</option>
-                      <option value="assigned">Assigned</option>
-                      <option value="in-progress">In Progress</option>
-                      <option value="completed">Completed</option>
+                      <option value="available" style={{ background: '#1e293b' }}>Available</option>
+                      <option value="assigned" style={{ background: '#1e293b' }}>Assigned</option>
+                      <option value="in-progress" style={{ background: '#1e293b' }}>In Progress</option>
+                      <option value="completed" style={{ background: '#1e293b' }}>Completed</option>
                     </select>
                   </div>
 
                   {/* Driver (optional) */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Assigned Driver
+                    <label className="block text-sm font-bold mb-2" style={{ 
+                      color: '#fb923c',
+                      letterSpacing: '0.05em'
+                    }}>
+                      ASSIGNED DRIVER
                     </label>
                     <input
                       type="text"
@@ -571,14 +864,22 @@ export default function Trips() {
                       value={formData.driver || ''}
                       onChange={(e) => setFormData({ ...formData, driver: e.target.value })}
                       placeholder="Driver name"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all"
+                      style={{
+                        background: 'rgba(30, 41, 59, 0.5)',
+                        border: '1px solid rgba(148, 163, 184, 0.3)',
+                        color: 'white'
+                      }}
                     />
                   </div>
 
                   {/* Notes */}
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Notes
+                    <label className="block text-sm font-bold mb-2" style={{ 
+                      color: '#22d3ee',
+                      letterSpacing: '0.05em'
+                    }}>
+                      NOTES
                     </label>
                     <textarea
                       disabled={modalMode === 'view'}
@@ -586,7 +887,12 @@ export default function Trips() {
                       onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                       placeholder="Additional trip notes..."
                       rows={3}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                      className="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 transition-all"
+                      style={{
+                        background: 'rgba(30, 41, 59, 0.5)',
+                        border: '1px solid rgba(148, 163, 184, 0.3)',
+                        color: 'white'
+                      }}
                     />
                   </div>
                 </div>
@@ -596,13 +902,23 @@ export default function Trips() {
                     <button
                       type="button"
                       onClick={() => setShowModal(false)}
-                      className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                      className="px-6 py-3 rounded-lg font-bold transition-all duration-300 hover:scale-105"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(148, 163, 184, 0.2) 0%, rgba(100, 116, 139, 0.2) 100%)',
+                        border: '1px solid rgba(148, 163, 184, 0.3)',
+                        color: '#94a3b8'
+                      }}
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                      className="px-6 py-3 rounded-lg font-bold transition-all duration-300 hover:scale-105"
+                      style={{
+                        background: 'linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)',
+                        color: 'white',
+                        boxShadow: '0 4px 15px rgba(34, 211, 238, 0.4)'
+                      }}
                     >
                       {modalMode === 'add' ? 'Create Trip' : 'Save Changes'}
                     </button>
@@ -614,7 +930,12 @@ export default function Trips() {
                     <button
                       type="button"
                       onClick={() => setShowModal(false)}
-                      className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                      className="px-6 py-3 rounded-lg font-bold transition-all duration-300 hover:scale-105"
+                      style={{
+                        background: 'linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)',
+                        color: 'white',
+                        boxShadow: '0 4px 15px rgba(34, 211, 238, 0.4)'
+                      }}
                     >
                       Close
                     </button>
@@ -628,30 +949,65 @@ export default function Trips() {
         {/* Remove the static form - it's now in the modal */}
 
         {/* Companies Section */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">🤝 Partner Companies Offering Loads</h2>
+        <div className="rounded-2xl shadow-xl p-6" style={{
+          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(34, 211, 238, 0.2)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+        }}>
+          <h2 className="text-2xl font-black mb-6" style={{
+            background: 'linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>🤝 Partner Companies Offering Loads</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {companies.map((company) => (
-              <div key={company.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-medium text-gray-900">🏢 {company.name}</h3>
-                  <div className="flex items-center">
-                    <span className="text-yellow-400">⭐</span>
-                    <span className="text-sm text-gray-600 ml-1">{company.rating}</span>
+              <div key={company.id} className="rounded-xl p-5 transition-all duration-300 hover:scale-105" style={{
+                background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.08) 0%, rgba(129, 140, 248, 0.08) 100%)',
+                border: '1px solid rgba(34, 211, 238, 0.2)',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+              }}>
+                <div className="flex justify-between items-start mb-3">
+                  <h3 className="font-bold text-white flex items-center gap-2">
+                    <span style={{ color: '#10b981' }}>🏢</span>
+                    {company.name}
+                  </h3>
+                  <div className="flex items-center px-2 py-1 rounded" style={{
+                    background: 'linear-gradient(135deg, rgba(251, 146, 60, 0.2) 0%, rgba(249, 115, 22, 0.2) 100%)',
+                    border: '1px solid rgba(251, 146, 60, 0.3)'
+                  }}>
+                    <span style={{ color: '#fb923c' }}>⭐</span>
+                    <span className="text-sm font-bold ml-1" style={{ color: '#fb923c' }}>{company.rating}</span>
                   </div>
                 </div>
-                <p className="text-sm text-gray-600 mb-2">📊 {company.totalLoads} loads completed</p>
-                <p className="text-sm text-gray-500 mb-3">📧 {company.contactInfo}</p>
+                <p className="text-sm mb-2 flex items-center gap-2" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>
+                  <span style={{ color: '#22d3ee' }}>📊</span>
+                  {company.totalLoads} loads completed
+                </p>
+                <p className="text-sm mb-4 flex items-center gap-2" style={{ color: 'rgba(148, 163, 184, 0.7)' }}>
+                  <span style={{ color: '#818cf8' }}>📧</span>
+                  {company.contactInfo}
+                </p>
                 <div className="space-y-2">
                   <button 
                     type="button"
-                    className="w-full bg-blue-100 text-blue-700 py-2 px-3 rounded-md text-sm hover:bg-blue-200"
+                    className="w-full py-2 px-3 rounded-lg text-sm font-bold transition-all duration-300 hover:scale-105"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(129, 140, 248, 0.2) 100%)',
+                      border: '1px solid rgba(34, 211, 238, 0.3)',
+                      color: '#22d3ee'
+                    }}
                   >
                     📋 View Available Loads
                   </button>
                   <button 
                     type="button"
-                    className="w-full bg-green-100 text-green-700 py-2 px-3 rounded-md text-sm hover:bg-green-200"
+                    className="w-full py-2 px-3 rounded-lg text-sm font-bold transition-all duration-300 hover:scale-105"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%)',
+                      border: '1px solid rgba(16, 185, 129, 0.3)',
+                      color: '#10b981'
+                    }}
                   >
                     📞 Contact Company
                   </button>
@@ -660,6 +1016,7 @@ export default function Trips() {
             ))}
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Drivers() {
+  const navigate = useNavigate();
   // Initial default drivers data
   const defaultDrivers = [
     {
@@ -95,6 +97,32 @@ export default function Drivers() {
 
   // Initialize state with data from localStorage
   const [drivers, setDrivers] = useState(loadDriversFromStorage);
+
+  // Reload drivers from localStorage when component mounts or window gains focus
+  useEffect(() => {
+    const reloadDrivers = () => {
+      const updated = loadDriversFromStorage();
+      setDrivers(updated);
+    };
+
+    // Reload on mount
+    reloadDrivers();
+
+    // Reload when window gains focus (e.g., navigating back)
+    window.addEventListener('focus', reloadDrivers);
+    
+    // Reload when visibility changes
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        reloadDrivers();
+      }
+    });
+
+    return () => {
+      window.removeEventListener('focus', reloadDrivers);
+      document.removeEventListener('visibilitychange', reloadDrivers);
+    };
+  }, []);
 
   // Save drivers to localStorage whenever it changes
   useEffect(() => {
@@ -275,8 +303,8 @@ export default function Drivers() {
 
   // View driver profile
   const handleViewProfile = (driver: any) => {
-    setSelectedDriver(driver);
-    setShowViewProfileModal(true);
+    // Navigate to driver profile page
+    navigate(`/driver/${driver.id}`);
   };
 
   // Update driver status
@@ -353,49 +381,114 @@ export default function Drivers() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)' }}>
       {/* Notification */}
       {notification && (
-        <div className={`fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 ${
-          notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'
-        } text-white animate-fade-in`}>
+        <div style={{
+          background: notification.type === 'success' ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+          backdropFilter: 'blur(20px)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+        }} className="fixed top-4 right-4 px-6 py-3 rounded-xl z-50 text-white animate-fade-in font-semibold">
           {notification.message}
         </div>
       )}
 
-      <div className="mx-auto max-w-7xl">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Driver Management</h1>
-          <button 
-            type="button"
-            onClick={() => setShowAddDriverModal(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
-          >
-            🚛 Hire New Driver
-          </button>
+      {/* Professional Header */}
+      <div style={{ 
+        background: 'rgba(15, 23, 42, 0.8)', 
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(34, 211, 238, 0.1)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+      }} className="mb-8">
+        <div className="px-8 py-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-3xl font-bold text-white tracking-tight">Driver Management</h1>
+                <span className="text-xs font-bold px-3 py-1 rounded-full" style={{
+                  background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(129, 140, 248, 0.2) 100%)',
+                  border: '1px solid rgba(34, 211, 238, 0.3)',
+                  color: '#22d3ee',
+                  letterSpacing: '0.15em'
+                }}>
+                  ATONDA
+                </span>
+              </div>
+              <p className="text-sm" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>Manage your driver team</p>
+            </div>
+            <div className="flex gap-3">
+              <button 
+                type="button"
+                onClick={() => navigate('/driver/new')}
+                style={{
+                  background: 'linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)',
+                  boxShadow: '0 4px 15px rgba(34, 211, 238, 0.4)'
+                }}
+                className="px-6 py-3 rounded-xl text-white font-bold flex items-center gap-2 hover:scale-105 transition-transform"
+              >
+                📸 Add Driver with Photo
+              </button>
+              <button 
+                type="button"
+                onClick={() => setShowAddDriverModal(true)}
+                style={{
+                  background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(129, 140, 248, 0.2) 100%)',
+                  border: '1px solid rgba(34, 211, 238, 0.3)',
+                  color: '#22d3ee'
+                }}
+                className="px-6 py-3 rounded-xl font-semibold flex items-center gap-2 hover:scale-105 transition-transform"
+              >
+                🚛 Quick Add Driver
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <div className="px-8 pb-8">
+        <div className="mx-auto max-w-7xl">
 
         {/* Driver Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white p-4 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900">Total Drivers</h3>
-            <p className="text-2xl font-bold text-blue-600">{drivers.length}</p>
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.15) 0%, rgba(6, 182, 212, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(34, 211, 238, 0.3)',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+          }} className="p-4 rounded-xl">
+            <h3 className="text-lg font-semibold text-white">Total Drivers</h3>
+            <p className="text-2xl font-bold text-primary">{drivers.length}</p>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900">Active Drivers</h3>
-            <p className="text-2xl font-bold text-green-600">
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(16, 185, 129, 0.3)',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+          }} className="p-4 rounded-xl">
+            <h3 className="text-lg font-semibold text-white">Active Drivers</h3>
+            <p className="text-2xl font-bold" style={{ color: '#10b981' }}>
               {drivers.filter(d => d.status === 'active').length}
             </p>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900">On Leave</h3>
-            <p className="text-2xl font-bold text-yellow-600">
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(251, 146, 60, 0.15) 0%, rgba(249, 115, 22, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(251, 146, 60, 0.3)',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+          }} className="p-4 rounded-xl">
+            <h3 className="text-lg font-semibold text-white">On Leave</h3>
+            <p className="text-2xl font-bold" style={{ color: '#fb923c' }}>
               {drivers.filter(d => d.status === 'on_leave').length}
             </p>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow">
-            <h3 className="text-lg font-semibold text-gray-900">Avg Rating</h3>
-            <p className="text-2xl font-bold text-purple-600">
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(129, 140, 248, 0.15) 0%, rgba(99, 102, 241, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(129, 140, 248, 0.3)',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+          }} className="p-4 rounded-xl">
+            <h3 className="text-lg font-semibold text-white">Avg Rating</h3>
+            <p className="text-2xl font-bold" style={{ color: '#818cf8' }}>
               {(drivers.reduce((sum, d) => sum + d.rating, 0) / drivers.length).toFixed(1)}
             </p>
           </div>
@@ -408,74 +501,176 @@ export default function Drivers() {
             return (
               <div 
                 key={driver.id} 
-                className={`${cardTheme.background} ${cardTheme.border} ${cardTheme.shadow} ${cardTheme.glow} ${cardTheme.accent} rounded-xl p-6 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 relative overflow-hidden`}
+                style={{
+                  background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(34, 211, 238, 0.2)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+                }}
+                className="rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 relative overflow-hidden"
               >
-                {/* Driver Header */}
-                <div className="flex items-center mb-4 relative z-10">
-                  <div className="relative">
-                    <img
-                      src={driver.profileImage}
-                      alt={driver.name}
-                      className="w-16 h-16 rounded-full object-cover mr-4 ring-4 ring-white/50 shadow-lg"
-                    />
-                    <div className={`absolute -top-1 -right-1 w-5 h-5 rounded-full border-2 border-white ${
-                      driver.status === 'active' ? 'bg-green-500 animate-pulse' : 
-                      driver.status === 'on_leave' ? 'bg-yellow-500' : 'bg-red-500'
-                    }`}></div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">{driver.name}</h3>
-                    <p className="text-sm text-gray-600">📍 {driver.location}</p>
-                    <div className="flex items-center mt-1">
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <span 
-                            key={i} 
-                            className={`text-sm ${i < Math.floor(driver.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
-                          >
-                            ⭐
-                          </span>
-                        ))}
+                {/* Holographic Profile Header */}
+                <div className="flex items-start mb-6 relative z-10">
+                  {/* Holographic Avatar Container */}
+                  <div className="relative mr-6">
+                    {/* Holographic Glow Effect */}
+                    <div className="absolute inset-0 rounded-full animate-pulse" style={{
+                      background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.3) 0%, rgba(129, 140, 248, 0.3) 50%, rgba(251, 146, 60, 0.3) 100%)',
+                      filter: 'blur(20px)',
+                      transform: 'scale(1.2)'
+                    }}></div>
+                    
+                    {/* Rotating Holographic Ring */}
+                    <div className="absolute inset-0 rounded-full" style={{
+                      background: 'linear-gradient(135deg, transparent 0%, rgba(34, 211, 238, 0.5) 25%, transparent 50%, rgba(129, 140, 248, 0.5) 75%, transparent 100%)',
+                      animation: 'spin 3s linear infinite',
+                      padding: '3px'
+                    }}>
+                      <div className="w-full h-full rounded-full" style={{
+                        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
+                      }}></div>
+                    </div>
+                    
+                    {/* Avatar Image with Holographic Border */}
+                    <div className="relative" style={{
+                      width: '96px',
+                      height: '96px'
+                    }}>
+                      <img
+                        src={driver.profileImage}
+                        alt={driver.name}
+                        className="rounded-full object-cover relative z-10"
+                        style={{ 
+                          width: '96px',
+                          height: '96px',
+                          border: '3px solid rgba(34, 211, 238, 0.4)',
+                          boxShadow: '0 0 30px rgba(34, 211, 238, 0.5), inset 0 0 20px rgba(34, 211, 238, 0.2)'
+                        }}
+                      />
+                      
+                      {/* Status Indicator with Glow */}
+                      <div style={{
+                        background: driver.status === 'active' 
+                          ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' 
+                          : driver.status === 'on_leave' 
+                          ? 'linear-gradient(135deg, #fb923c 0%, #f97316 100%)' 
+                          : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                        boxShadow: driver.status === 'active' 
+                          ? '0 0 20px rgba(16, 185, 129, 0.8), 0 0 40px rgba(16, 185, 129, 0.4)' 
+                          : driver.status === 'on_leave'
+                          ? '0 0 20px rgba(251, 146, 60, 0.8)'
+                          : '0 0 20px rgba(239, 68, 68, 0.8)'
+                      }} className={`absolute -bottom-1 -right-1 w-7 h-7 rounded-full border-3 border-gray-900 z-20 flex items-center justify-center ${driver.status === 'active' ? 'animate-pulse' : ''}`}>
+                        <span className="text-white text-xs font-bold">
+                          {driver.status === 'active' ? '✓' : driver.status === 'on_leave' ? '⏸' : '✕'}
+                        </span>
                       </div>
-                      <span className="text-sm font-medium text-gray-700 ml-2">{driver.rating}</span>
-                      <span className="text-xs text-gray-500 ml-2">({driver.totalTrips} trips)</span>
+                    </div>
+                  </div>
+                  
+                  {/* Driver Info */}
+                  <div className="flex-1">
+                    <div className="mb-3">
+                      <h3 className="text-2xl font-bold text-white mb-1" style={{
+                        textShadow: '0 0 20px rgba(34, 211, 238, 0.5)'
+                      }}>{driver.name}</h3>
+                      <p className="text-sm flex items-center gap-2" style={{ color: 'rgba(148, 163, 184, 0.9)' }}>
+                        <span style={{
+                          background: 'linear-gradient(135deg, #22d3ee 0%, #818cf8 100%)',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                          fontWeight: '600'
+                        }}>📍 {driver.location}</span>
+                      </p>
+                    </div>
+                    
+                    {/* Rating with Holographic Effect */}
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex items-center gap-1 px-3 py-1.5 rounded-full" style={{
+                        background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.1) 100%)',
+                        border: '1px solid rgba(251, 191, 36, 0.3)',
+                        boxShadow: '0 0 20px rgba(251, 191, 36, 0.3)'
+                      }}>
+                        <div className="flex">
+                          {[...Array(5)].map((_, i) => (
+                            <span 
+                              key={i} 
+                              className="text-base"
+                              style={{
+                                color: i < Math.floor(driver.rating) ? '#fbbf24' : 'rgba(148, 163, 184, 0.3)',
+                                filter: i < Math.floor(driver.rating) ? 'drop-shadow(0 0 8px rgba(251, 191, 36, 0.8))' : 'none'
+                              }}
+                            >
+                              ⭐
+                            </span>
+                          ))}
+                        </div>
+                        <span className="text-sm font-bold ml-2" style={{
+                          background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent'
+                        }}>{driver.rating}</span>
+                      </div>
+                      
+                      <div className="px-3 py-1.5 rounded-full" style={{
+                        background: 'rgba(34, 211, 238, 0.1)',
+                        border: '1px solid rgba(34, 211, 238, 0.3)'
+                      }}>
+                        <span className="text-xs font-semibold text-primary">{driver.totalTrips} trips</span>
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Driver Details Grid */}
                 <div className="grid grid-cols-2 gap-4 mb-4 relative z-10">
-                  <div className="bg-white/60 rounded-lg p-3 backdrop-blur-sm">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide">License</p>
-                    <p className="text-sm font-medium text-gray-900">{driver.licenseNumber}</p>
-                    <p className="text-xs text-gray-600">Valid CDL</p>
+                  <div style={{
+                    background: 'rgba(30, 41, 59, 0.6)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(148, 163, 184, 0.2)'
+                  }} className="rounded-lg p-3">
+                    <p className="text-xs uppercase tracking-wide" style={{ color: 'rgba(148, 163, 184, 0.7)' }}>License</p>
+                    <p className="text-sm font-medium text-white">{driver.licenseNumber}</p>
+                    <p className="text-xs" style={{ color: 'rgba(148, 163, 184, 0.6)' }}>Valid CDL</p>
                   </div>
                   
-                  <div className="bg-white/60 rounded-lg p-3 backdrop-blur-sm">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide">Experience</p>
-                    <p className="text-sm font-medium text-gray-900">{driver.experience}</p>
-                    <p className="text-xs text-gray-600">Commercial driving</p>
+                  <div style={{
+                    background: 'rgba(30, 41, 59, 0.6)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(148, 163, 184, 0.2)'
+                  }} className="rounded-lg p-3">
+                    <p className="text-xs uppercase tracking-wide" style={{ color: 'rgba(148, 163, 184, 0.7)' }}>Experience</p>
+                    <p className="text-sm font-medium text-white">{driver.experience}</p>
+                    <p className="text-xs" style={{ color: 'rgba(148, 163, 184, 0.6)' }}>Commercial driving</p>
                   </div>
                   
-                  <div className="bg-white/60 rounded-lg p-3 backdrop-blur-sm">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide">Status</p>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      driver.status === 'active' ? 'bg-green-100 text-green-800 border border-green-200' :
-                      driver.status === 'on_leave' ? 'bg-yellow-100 text-yellow-800 border border-yellow-200' :
-                      'bg-red-100 text-red-800 border border-red-200'
-                    }`}>
+                  <div style={{
+                    background: 'rgba(30, 41, 59, 0.6)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(148, 163, 184, 0.2)'
+                  }} className="rounded-lg p-3">
+                    <p className="text-xs uppercase tracking-wide" style={{ color: 'rgba(148, 163, 184, 0.7)' }}>Status</p>
+                    <span style={{
+                      background: driver.status === 'active' ? 'rgba(16, 185, 129, 0.2)' : driver.status === 'on_leave' ? 'rgba(251, 146, 60, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                      color: driver.status === 'active' ? '#10b981' : driver.status === 'on_leave' ? '#fb923c' : '#ef4444',
+                      border: `1px solid ${driver.status === 'active' ? 'rgba(16, 185, 129, 0.3)' : driver.status === 'on_leave' ? 'rgba(251, 146, 60, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`
+                    }} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
                       {driver.status === 'active' ? '🟢 Active' : 
                        driver.status === 'on_leave' ? '🟡 On Leave' : '🔴 Inactive'}
                     </span>
                   </div>
                   
-                  <div className="bg-white/60 rounded-lg p-3 backdrop-blur-sm">
-                    <p className="text-xs text-gray-500 uppercase tracking-wide">Phone</p>
-                    <p className="text-sm font-medium text-gray-900">{driver.phone}</p>
+                  <div style={{
+                    background: 'rgba(30, 41, 59, 0.6)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(148, 163, 184, 0.2)'
+                  }} className="rounded-lg p-3">
+                    <p className="text-xs uppercase tracking-wide" style={{ color: 'rgba(148, 163, 184, 0.7)' }}>Phone</p>
+                    <p className="text-sm font-medium text-white">{driver.phone}</p>
                     <button 
                       type="button"
                       onClick={() => window.location.href = `tel:${driver.phone}`}
-                      className="text-xs text-blue-600 hover:text-blue-800 transition-colors"
+                      className="text-xs text-primary hover:text-primary-light transition-colors"
                     >
                       📞 Call
                     </button>
@@ -992,6 +1187,7 @@ export default function Drivers() {
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

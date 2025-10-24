@@ -23,6 +23,7 @@ const translations = {
     'nav.maintenance': 'Maintenance',
     'nav.reports': 'Reports',
     'nav.safety': 'Safety',
+    'nav.communications': 'Communications',
     'nav.settings': 'Settings',
     'nav.notifications': 'Notifications',
     

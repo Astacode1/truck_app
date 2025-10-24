@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Plus, Edit2, Trash2, Eye, X } from 'lucide-react'
+import { 
+  RiAddFill as Plus, 
+  RiEdit2Fill as Edit2, 
+  RiDeleteBin6Fill as Trash2, 
+  RiEyeFill as Eye, 
+  RiCloseFill as X 
+} from 'react-icons/ri'
 
 interface Truck {
   id: number
@@ -182,112 +188,173 @@ export default function Trucks() {
   }
 
   return (
-    <div>
-      <div className="mb-8 flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>Trucks</h1>
-          <p className="mt-2" style={{ color: 'var(--text-secondary)' }}>Manage your fleet of trucks</p>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)' }}>
+      {/* Professional Header */}
+      <div style={{ 
+        background: 'rgba(15, 23, 42, 0.8)', 
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(34, 211, 238, 0.1)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+      }} className="mb-8">
+        <div className="px-8 py-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-3xl font-bold text-white tracking-tight">Trucks Management</h1>
+                <span className="text-xs font-bold px-3 py-1 rounded-full" style={{
+                  background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(129, 140, 248, 0.2) 100%)',
+                  border: '1px solid rgba(34, 211, 238, 0.3)',
+                  color: '#22d3ee',
+                  letterSpacing: '0.15em'
+                }}>
+                  ATONDA
+                </span>
+              </div>
+              <p className="text-sm" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>Manage your fleet of trucks</p>
+            </div>
+            <button 
+              type="button"
+              onClick={openAddModal}
+              style={{
+                background: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)',
+                boxShadow: '0 4px 15px rgba(34, 211, 238, 0.4)'
+              }}
+              className="px-6 py-3 rounded-xl text-white font-semibold flex items-center gap-2 hover:scale-105 transition-transform"
+            >
+              <Plus size={20} />
+              Add New Truck
+            </button>
+          </div>
         </div>
-        <button 
-          type="button"
-          onClick={openAddModal}
-          className="btn-primary flex items-center gap-2"
-        >
-          <Plus size={20} />
-          Add New Truck
-        </button>
       </div>
 
-      <div className="card">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Plate Number
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Make & Model
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Driver
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Mileage
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {trucks.map((truck) => (
-                <tr key={truck.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {truck.plateNumber}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {truck.make} {truck.model} {truck.year}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {truck.driver}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {truck.mileage.toLocaleString()} mi
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 ${getStatusColor(truck.status)} text-xs rounded-full`}>
-                      {truck.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <button 
-                      type="button"
-                      onClick={() => openViewModal(truck)}
-                      className="text-blue-600 hover:text-blue-900 mr-3"
-                      title="View Details"
-                    >
-                      <Eye size={18} />
-                    </button>
-                    <button 
-                      type="button"
-                      onClick={() => openEditModal(truck)}
-                      className="text-primary-600 hover:text-primary-900 mr-3"
-                      title="Edit"
-                    >
-                      <Edit2 size={18} />
-                    </button>
-                    <button 
-                      type="button"
-                      onClick={() => handleDelete(truck.id)}
-                      className="text-red-600 hover:text-red-900"
-                      title="Delete"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </td>
+      <div className="px-8 pb-8">
+        {/* Glassy Table Card */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(34, 211, 238, 0.2)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+        }} className="rounded-2xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full">
+              <thead>
+                <tr style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-primary uppercase tracking-wider">
+                    Plate Number
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-primary uppercase tracking-wider">
+                    Make & Model
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-primary uppercase tracking-wider">
+                    Driver
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-primary uppercase tracking-wider">
+                    Mileage
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-primary uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-primary uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {trucks.map((truck) => (
+                  <tr key={truck.id} style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.1)' }} className="hover:bg-white hover:bg-opacity-5 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-white">
+                      {truck.plateNumber}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'rgba(148, 163, 184, 0.9)' }}>
+                      {truck.make} {truck.model} {truck.year}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'rgba(148, 163, 184, 0.9)' }}>
+                      {truck.driver}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'rgba(148, 163, 184, 0.9)' }}>
+                      {truck.mileage.toLocaleString()} mi
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span style={{
+                        background: truck.status === 'Active' ? 'rgba(16, 185, 129, 0.2)' : truck.status === 'Maintenance' ? 'rgba(251, 146, 60, 0.2)' : 'rgba(148, 163, 184, 0.2)',
+                        color: truck.status === 'Active' ? '#10b981' : truck.status === 'Maintenance' ? '#fb923c' : 'rgba(148, 163, 184, 0.9)',
+                        border: `1px solid ${truck.status === 'Active' ? 'rgba(16, 185, 129, 0.3)' : truck.status === 'Maintenance' ? 'rgba(251, 146, 60, 0.3)' : 'rgba(148, 163, 184, 0.3)'}`
+                      }} className="px-3 py-1 text-xs font-semibold rounded-full">
+                        {truck.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <div className="flex items-center gap-2">
+                        <button 
+                          type="button"
+                          onClick={() => openViewModal(truck)}
+                          className="p-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-colors"
+                          style={{ color: '#22d3ee' }}
+                          title="View Details"
+                        >
+                          <Eye size={18} />
+                        </button>
+                        <button 
+                          type="button"
+                          onClick={() => openEditModal(truck)}
+                          className="p-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-colors"
+                          style={{ color: '#22d3ee' }}
+                          title="Edit"
+                        >
+                          <Edit2 size={18} />
+                        </button>
+                        <button 
+                          type="button"
+                          onClick={() => handleDelete(truck.id)}
+                          className="p-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-colors"
+                          style={{ color: '#fb923c' }}
+                          title="Delete"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Glassy Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-900">
-                {modalMode === 'add' ? 'Add New Truck' : modalMode === 'edit' ? 'Edit Truck' : 'Truck Details'}
-              </h2>
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: 'rgba(0, 0, 0, 0.7)', backdropFilter: 'blur(8px)' }}>
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(34, 211, 238, 0.3)',
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)'
+          }} className="rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 px-6 py-4 flex justify-between items-center" style={{ 
+              background: 'rgba(15, 23, 42, 0.95)', 
+              backdropFilter: 'blur(20px)',
+              borderBottom: '1px solid rgba(34, 211, 238, 0.2)' 
+            }}>
+              <div className="flex items-center gap-3">
+                <h2 className="text-2xl font-bold text-white">
+                  {modalMode === 'add' ? 'Add New Truck' : modalMode === 'edit' ? 'Edit Truck' : 'Truck Details'}
+                </h2>
+                <span className="text-xs font-bold px-2 py-1 rounded-full" style={{
+                  background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(129, 140, 248, 0.2) 100%)',
+                  border: '1px solid rgba(34, 211, 238, 0.3)',
+                  color: '#22d3ee',
+                  letterSpacing: '0.1em'
+                }}>
+                  ATONDA
+                </span>
+              </div>
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="p-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-colors"
+                style={{ color: 'rgba(148, 163, 184, 0.8)' }}
               >
                 <X size={24} />
               </button>
@@ -297,7 +364,7 @@ export default function Trucks() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Plate Number */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold mb-2" style={{ color: '#22d3ee' }}>
                     Plate Number *
                   </label>
                   <input
@@ -306,13 +373,18 @@ export default function Trucks() {
                     disabled={modalMode === 'view'}
                     value={formData.plateNumber || ''}
                     onChange={(e) => setFormData({ ...formData, plateNumber: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
+                    style={{
+                      background: 'rgba(15, 23, 42, 0.6)',
+                      border: '1px solid rgba(34, 211, 238, 0.3)',
+                      color: 'white'
+                    }}
+                    className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50"
                   />
                 </div>
 
                 {/* VIN */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold mb-2" style={{ color: '#22d3ee' }}>
                     VIN *
                   </label>
                   <input

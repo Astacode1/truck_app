@@ -2,36 +2,36 @@ import { useState, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useTranslation } from '../contexts/TranslationContext';
 import { 
-  User, 
-  Shield, 
-  Bell, 
-  Database, 
-  Download, 
-  Upload, 
-  Trash2, 
-  Key, 
-  Mail, 
-  Phone, 
-  Building, 
-  MapPin,
-  Sun,
-  Moon,
-  Monitor,
-  Save,
-  RefreshCw,
-  Eye,
-  EyeOff,
-  Edit,
-  Check,
-  X,
-  Settings as SettingsIcon,
-  Palette,
-  Globe,
-  Clock,
-  Calculator,
-  FileText,
-  Truck
-} from 'lucide-react';
+  RiUserFill as User, 
+  RiShieldCheckFill as Shield, 
+  RiNotification3Fill as Bell, 
+  RiDatabaseFill as Database, 
+  RiDownloadFill as Download, 
+  RiUploadFill as Upload, 
+  RiDeleteBin6Fill as Trash2, 
+  RiKeyFill as Key, 
+  RiMailFill as Mail, 
+  RiPhoneFill as Phone, 
+  RiBuildingFill as Building, 
+  RiMapPinFill as MapPin,
+  RiSunFill as Sun,
+  RiMoonFill as Moon,
+  RiComputerFill as Monitor,
+  RiSaveFill as Save,
+  RiRefreshFill as RefreshCw,
+  RiEyeFill as Eye,
+  RiEyeOffFill as EyeOff,
+  RiEdit2Fill as Edit,
+  RiCheckFill as Check,
+  RiCloseFill as X,
+  RiSettings3Fill as SettingsIcon,
+  RiPaletteFill as Palette,
+  RiGlobalFill as Globe,
+  RiTimeFill as Clock,
+  RiCalculatorFill as Calculator,
+  RiFileTextFill as FileText,
+  RiTruckFill as Truck
+} from 'react-icons/ri';
 
 interface UserCredentials {
   firstName: string;
@@ -574,32 +574,55 @@ export default function Settings() {
   ];
 
   return (
-    <div className={`min-h-screen p-6 ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold flex items-center gap-3">
-          <SettingsIcon className="w-8 h-8 text-blue-600" />
-          {t('settings.title')}
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">
-          {t('settings.subtitle')}
-        </p>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)' }}>
+      {/* Professional Header */}
+      <div style={{ 
+        background: 'rgba(15, 23, 42, 0.8)', 
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(34, 211, 238, 0.1)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)'
+      }} className="mb-8">
+        <div className="px-8 py-6">
+          <div className="flex items-center gap-3 mb-2">
+            <SettingsIcon className="w-8 h-8" style={{ color: '#22d3ee' }} />
+            <h1 className="text-3xl font-bold text-white tracking-tight">{t('settings.title')}</h1>
+            <span className="text-xs font-bold px-3 py-1 rounded-full" style={{
+              background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(129, 140, 248, 0.2) 100%)',
+              border: '1px solid rgba(34, 211, 238, 0.3)',
+              color: '#22d3ee',
+              letterSpacing: '0.15em'
+            }}>
+              ATONDA
+            </span>
+          </div>
+          <p className="text-sm" style={{ color: 'rgba(148, 163, 184, 0.8)' }}>
+            {t('settings.subtitle')}
+          </p>
+        </div>
       </div>
 
       {/* Notification */}
       {notification && (
-        <div className={`fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
-          notification.type === 'success' 
-            ? 'bg-green-500 text-white' 
-            : 'bg-red-500 text-white'
-        }`}>
+        <div style={{
+          background: notification.type === 'success' 
+            ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.95) 0%, rgba(5, 150, 105, 0.95) 100%)'
+            : 'linear-gradient(135deg, rgba(251, 146, 60, 0.95) 0%, rgba(249, 115, 22, 0.95) 100%)',
+          backdropFilter: 'blur(20px)',
+          border: `1px solid ${notification.type === 'success' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(251, 146, 60, 0.3)'}`,
+          boxShadow: `0 8px 32px ${notification.type === 'success' ? 'rgba(16, 185, 129, 0.4)' : 'rgba(251, 146, 60, 0.4)'}`
+        }} className="fixed top-4 right-4 p-4 rounded-xl text-white font-semibold shadow-lg z-50">
           {notification.message}
         </div>
       )}
 
-      <div className="flex gap-6">
-        {/* Sidebar Tabs */}
-        <div className={`w-64 ${isDarkMode ? 'bg-slate-800' : 'bg-white'} rounded-lg shadow-sm p-4`}>
+      <div className="px-8 pb-8 flex gap-6">
+        {/* Sidebar Tabs - Glassy */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(34, 211, 238, 0.2)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+        }} className="w-64 rounded-2xl p-4">
           <nav className="space-y-2">
             {tabs.map((tab) => {
               const IconComponent = tab.icon;
@@ -607,16 +630,22 @@ export default function Settings() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                    activeTab === tab.id
-                      ? 'bg-blue-600 text-white'
-                      : isDarkMode
-                        ? 'text-gray-300 hover:bg-slate-700'
-                        : 'text-gray-700 hover:bg-gray-100'
-                  }`}
+                  style={{
+                    background: activeTab === tab.id
+                      ? 'linear-gradient(135deg, rgba(34, 211, 238, 0.3) 0%, rgba(129, 140, 248, 0.2) 100%)'
+                      : 'transparent',
+                    border: activeTab === tab.id
+                      ? '1px solid rgba(34, 211, 238, 0.4)'
+                      : '1px solid transparent',
+                    boxShadow: activeTab === tab.id
+                      ? '0 4px 15px rgba(34, 211, 238, 0.3)'
+                      : 'none',
+                    color: activeTab === tab.id ? '#22d3ee' : 'rgba(148, 163, 184, 0.9)'
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all hover:bg-white hover:bg-opacity-5"
                 >
                   <IconComponent className="w-5 h-5" />
-                  {tab.label}
+                  <span className="font-semibold">{tab.label}</span>
                 </button>
               );
             })}
@@ -626,13 +655,22 @@ export default function Settings() {
         {/* Main Content */}
         <div className="flex-1">
           {activeTab === 'profile' && (
-            <div className={`${isDarkMode ? 'bg-slate-800' : 'bg-white'} rounded-lg shadow-sm p-6`}>
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(34, 211, 238, 0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+            }} className="rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-semibold">{t('profile.title')}</h2>
+                <h2 className="text-2xl font-semibold" style={{ color: '#22d3ee' }}>{t('profile.title')}</h2>
                 {!isEditing ? (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    style={{
+                      background: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)',
+                      boxShadow: '0 4px 15px rgba(34, 211, 238, 0.4)'
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-white font-semibold hover:scale-105 transition-transform"
                   >
                     <Edit className="w-4 h-4" />
                     {t('profile.edit')}
